@@ -1,2129 +1,468 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikrotik Internet Management System</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
+    <title>Level 3 Communication - ইন্টারনেট প্যাকেজ</title>
+    <!-- Google Fonts: Noto Sans Bengali -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
+    <style>
+        /* ==========================================================================
+           ১. CSS ভ্যারিয়েবল ও বেসিক স্টাইল
+           ========================================================================== */
         :root {
-            --primary-color: #005c9e;
-            --secondary-color: #007bff;
-            --accent-color: #d60076;
-            --speed-color: #e6007e;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8;
-            --light-bg: #f0f4f8;
-            --dark-text: #212529;
-            --light-text: #5a6a7a;
-            --card-bg: #fff;
-            --border-color: #dce4ec;
-            --gradient-primary: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
-            --gradient-hover: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            --bkash-color: #e2136e;
+            --bg-dark: #111827;
+            --bg-card: #1F2937;
+            --accent-color: #0ea5e9; /* Sky Blue */
+            --accent-hover: #0284c7;
+            --success-color: #10b981; /* Emerald */
+            --warning-color: #f59e0b; /* Amber */
+            --danger-color: #ef4444;  /* Red */
+            --primary-text: #e5e7eb;
+            --secondary-text: #9ca3af;
+            --border-color: #374151;
+            --speed-color: #ec4899; /* Pink */
+            --gradient-primary: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
         }
 
+        /* ==========================================================================
+           ২. সাধারণ বডি ও লেআউট স্টাইল
+           ========================================================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Noto Sans Bengali', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.7;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
+            background-color: var(--bg-dark);
+            color: var(--primary-text);
             font-size: 16px;
             overflow-x: hidden;
         }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 25px; }
+        .hidden { display: none !important; }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 25px;
-        }
-
+        /* ==========================================================================
+           ৩. টাইপোগ্রাফি (শিরোনাম, প্যারাগ্রাফ)
+           ========================================================================== */
+        h1, h2 { text-align: center; font-weight: 700; }
         h1 {
-            color: var(--primary-color);
-            text-align: center;
+            color: #fff;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             margin-bottom: 15px;
-            font-size: 3em;
-            font-weight: 700;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
         }
-
         h2 {
-            color: var(--secondary-color);
-            text-align: center;
-            font-size: 2em;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             margin-top: 60px;
-            margin-bottom: 35px;
-            font-weight: 600;
-            border-bottom: 3px solid var(--border-color);
+            margin-bottom: 25px;
+            color: #fff;
             padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
             position: relative;
         }
-
         h2::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--secondary-color);
-            border-radius: 2px;
+            content: ''; position: absolute; bottom: -2px; left: 50%;
+            transform: translateX(-50%); width: 80px; height: 3px;
+            background-color: var(--accent-color); border-radius: 2px;
         }
-
-        p.intro-text {
-            text-align: center;
-            margin-top: -10px;
-            margin-bottom: 60px;
-            font-size: 1.25em;
-            color: var(--light-text);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+        .intro-text, .section-subtext {
+            text-align: center; color: var(--secondary-text);
+            max-width: 800px; margin-left: auto; margin-right: auto;
         }
+        .intro-text { font-size: 1.25em; margin-top: 0; margin-bottom: 70px; }
+        .section-subtext { font-size: 1.1em; margin-top: -15px; margin-bottom: 40px; }
 
+        /* ==========================================================================
+           ৪. প্যাকেজ কার্ড স্টাইল
+           ========================================================================== */
         .package-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            justify-content: center;
         }
-
         .package-card {
+            background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 35px;
-            background-color: var(--card-bg);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
-            transition: transform .3s ease, box-shadow .3s ease;
+            border-radius: 12px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
-            border-top: 5px solid var(--primary-color);
+            border-top: 4px solid var(--accent-color);
         }
-
-        .package-card.data-limited-card {
-            border-top-color: var(--info-color);
-        }
-
-        .package-card.upload-focused,
-        .package-card.symmetric-focused {
-            border-top-color: var(--warning-color);
-        }
-        
         .package-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, .15);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-hover);
         }
-
+        .package-card.data-limited-card { border-top-color: var(--speed-color); }
+        .package-card.specialized-card { border-top-color: var(--warning-color); }
+        
+        .discount-badge {
+            background-color: var(--speed-color); color: white; padding: 4px 10px;
+            border-radius: 5px; font-size: 0.9em; font-weight: bold;
+            position: absolute; top: 15px; right: 15px;
+        }
         .package-card h3 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            font-weight: 700;
-            line-height: 1.3;
+            color: #fff; margin-top: 0; margin-bottom: 15px;
+            font-size: 1.7em; font-weight: 700;
         }
-
-        .package-card .data-limit {
-            font-size: 3.5em;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 15px;
-            line-height: 1;
-            display: block;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, .1);
+        .package-card .speed-display, .package-card .data-display {
+            font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 700;
+            color: #fff; margin-bottom: 20px; line-height: 1;
         }
-
-        .package-card .data-limit small {
-            font-size: .4em;
-            color: #444;
-            font-weight: 500;
-            margin-left: 5px;
-            vertical-align: baseline;
+        .package-card .speed-display small, .package-card .data-display small {
+            font-size: 0.3em; font-weight: 500; margin-left: 5px; color: var(--secondary-text);
         }
+        .package-card .data-display { color: var(--speed-color); }
 
-        .package-card .validity {
-            font-size: 1.1em;
-            color: var(--light-text);
-            margin-top: -10px;
-            margin-bottom: 25px;
-            display: block;
-        }
-
-        .package-card .advertised-speed {
-            font-size: 4.5em;
-            font-weight: 700;
-            color: var(--speed-color);
-            margin-bottom: 30px;
-            line-height: 1;
-            display: block;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, .1);
-        }
-
-        .package-card .advertised-speed small {
-            font-size: .28em;
-            color: #444;
-            font-weight: 500;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-
-        .package-card.data-limited-card .advertised-speed {
-            display: none;
-        }
-
-        .package-card .speed-details {
-            font-size: 1.05em;
-            text-align: left;
-            margin-bottom: 25px;
-            color: var(--dark-text);
-            background-color: #f5f9ff;
-            padding: 18px 22px;
-            border-radius: 10px;
-            border: 1px solid #d6e7ff;
+        .speed-details {
+            font-size: 1.05em; text-align: left; margin: 20px 0;
+            color: var(--primary-text); background-color: var(--bg-dark);
+            padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);
             flex-grow: 1;
         }
-
-        .package-card .speed-details p {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px dashed #e0e9f5;
-            padding-bottom: 8px;
-        }
-
-        .package-card .speed-details p:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .package-card .speed-details strong {
-            font-weight: 600;
-        }
-
-        .package-card .speed-details .label {
-            color: var(--light-text);
-            font-size: .9em;
-            margin-right: 10px;
-        }
-
-        .package-card .speed-details .value {
-            font-weight: 700;
-            text-align: right;
-            font-size: 1.1em;
-            word-break: break-all;
-        }
-
-        .package-card .speed-details .upload-speed .value {
-            color: var(--danger-color); 
-        }
-         .package-card .speed-details .upload-speed.high-upload .value {
-            color: var(--success-color); 
-            font-weight: bold;
-        }
-
-
-        .package-card .speed-details .main-speed .value {
-            color: var(--primary-color);
-        }
-
-        .package-card .speed-details .bdix-speed .value {
-            color: var(--secondary-color);
-        }
-
-        .package-card .speed-details .speed-limit .value {
-            color: var(--accent-color);
-        }
-
-        .package-card.under-200 .speed-details .main-speed,
-        .package-card.under-200 .speed-details .bdix-speed {
-            display: none;
-        }
-
-        .package-card.under-200 .speed-details .total-speed {
-            display: flex !important;
+        .speed-details p { margin: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+        .speed-details .label { color: var(--secondary-text); margin-right: 10px; }
+        .speed-details .value { font-weight: 600; color: #fff; }
+        .speed-details .high-upload .value { color: var(--success-color); font-weight: 700; }
+        .speed-details .fup-speed .value { color: var(--warning-color); } /* FUP স্পিডের জন্য নতুন স্টাইল */
+        .package-card.specialized-card .speed-details .high-upload .value::after {
+            content: ' 🔥'; color: var(--warning-color);
         }
         
-        .package-card.under-200 .speed-details .total-speed .value {
-            color: var(--speed-color);
-        }
-        
-        .package-card.under-200 .speed-details .upload-speed {
-            display: flex !important;
-        }
+        .pricing { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .old-price-container { min-height: 1.2em; margin-bottom: 4px; }
+        .old-price { text-decoration: line-through; color: var(--danger-color); opacity: 0.8; font-size: 1em; font-weight: 500; }
+        .total-price { font-size: 2.3em; font-weight: 700; color: var(--success-color); display: block; }
+        .total-price small { font-size: 0.45em; color: var(--secondary-text); font-weight: 400; }
+        .vat-info { font-size: 0.8em; color: var(--secondary-text); display: block; margin-top: -5px; }
 
-        .package-card.data-limited-card .speed-details .main-speed,
-        .package-card.data-limited-card .speed-details .bdix-speed {
-            display: none;
+        .select-button {
+            margin-top: 25px; padding: 15px 30px; background: var(--gradient-primary);
+            color: #fff; border: none; border-radius: 50px; cursor: pointer;
+            text-decoration: none; display: inline-block; transition: all .3s ease;
+            font-weight: 700; font-size: 1.1em; box-shadow: 0 5px 15px rgba(2, 132, 199, .4);
         }
+        .select-button:hover { box-shadow: 0 8px 20px rgba(2, 132, 199, .6); transform: translateY(-3px); }
 
-        .package-card.data-limited-card .speed-details .total-speed {
-            display: none;
+        /* ==========================================================================
+           ৫. পেমেন্ট ও ফর্ম স্টাইল
+           ========================================================================== */
+        #payment-section {
+            margin-top: 60px; padding: 40px; background-color: rgba(31, 41, 55, 0.5);
+            border-radius: 12px; border: 1px solid var(--border-color);
         }
-
-        .package-card.data-limited-card .speed-details .speed-limit {
-            display: flex !important;
-        }
-
-        .package-card .features {
-            font-size: 1em;
-            text-align: left;
-            margin-bottom: 25px;
-            padding-left: 5px;
-        }
-
-        .package-card .features ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .package-card .features li {
-            margin-bottom: 8px;
-            padding-left: 25px;
-            position: relative;
-            color: var(--dark-text);
-        }
-
-        .package-card .features li::before {
-            content: "\f00c";
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: var(--success-color);
-            position: absolute;
-            left: 0;
-            top: 3px;
-            font-size: 1.1em;
-        }
-
-        .package-card .pricing {
-            margin-top: auto;
-            padding-top: 15px; 
-            border-top: 1px solid var(--border-color);
-            font-size: 1em;
-            color: var(--light-text);
-        }
-        
-        .package-card .pricing .old-price-container {
-            text-align: center;
-            margin-bottom: 2px; 
-            min-height: 1.2em; 
-        }
-
-        .package-card .pricing .old-price {
-            text-decoration: line-through;
-            color: var(--danger-color);
-            font-size: 1em; 
-            font-weight: 500;
-        }
-         .package-card .pricing .vat-info {
-            font-size: 0.8em;
-            color: var(--light-text);
-            text-align: center;
-            display: block;
-            margin-top: -5px; 
-            margin-bottom: 5px; 
-        }
-
-        .package-card .pricing .total-price {
-            font-size: 2.1em; 
-            font-weight: 700;
-            color: var(--success-color);
-            margin-top: 0px; 
-            display: block;
-            text-align: center;
-        }
-
-        .package-card .pricing .total-price small {
-            font-size: .5em;
-            color: var(--light-text);
-            font-weight: 400;
-        }
-        .package-card .discount-badge {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            font-weight: bold;
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            z-index: 10;
-        }
-
-        .package-card .select-button {
-            margin-top: 25px;
-            padding: 16px 35px;
-            background: var(--gradient-primary);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block; 
-            transition: all .3s ease;
-            font-weight: 700;
-            font-size: 1.15em;
-            box-shadow: 0 5px 15px rgba(0, 92, 158, .4);
-            letter-spacing: .5px;
-        }
-        .package-card .select-button:hover {
-            background: var(--gradient-hover);
-            box-shadow: 0 8px 20px rgba(0, 92, 158, .6);
-            transform: translateY(-3px);
-        }
-
-        .info-section {
-            margin-top: 60px;
-            padding: 35px;
-            background-color: #e9f0f7;
-            border-radius: 12px;
-            border: 1px solid #d6e0ea;
-        }
-
-        .info-section h2 {
-            color: var(--primary-color);
-            font-size: 1.8em;
-            text-align: left;
-            border-bottom: none;
-            margin-bottom: 25px;
-        }
-
-        .payment-methods {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .payment-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
             align-items: center;
         }
-
-        .payment-methods li {
-            background-color: var(--card-bg);
-            padding: 20px 25px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            font-size: 1.05em;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, .05);
+        .qr-code-container { text-align: center; }
+        .qr-code-container h3 { font-size: 1.5em; margin-bottom: 15px; color: #fff; }
+        .qr-code-container img {
+            max-width: 250px; width: 100%; height: auto; border: 5px solid #fff;
+            border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        
-        .payment-methods .qr-code-item {
-            grid-column: 1 / -1; 
-            text-align: center;
-            background-color: #fff;
-            padding: 30px;
+        .bank-details-grid {
+            display: grid; grid-template-columns: 1fr; gap: 20px;
         }
-
-        .payment-methods strong {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--secondary-color);
-            font-size: 1.2em;
-            font-weight: 600;
+        .bank-item {
+            background-color: var(--bg-card); padding: 20px;
+            border-radius: 10px; border-left: 4px solid var(--accent-color);
         }
-
-        .payment-methods .icon {
-            margin-right: 10px;
-            font-size: 1.2em;
-            width: 22px;
-            text-align: center;
-            display: inline-block;
-            vertical-align: middle;
+        .bank-item strong {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2em; color: #fff; margin-bottom: 10px;
         }
-
-        .payment-methods .account-details {
-            font-size: .95em;
-            color: var(--light-text);
-            margin-top: 10px;
-            line-height: 1.6;
-        }
-
-        .payment-methods .account-details span { display: block; margin-bottom: 4px; }
-        .payment-methods .account-details .acc-label { font-weight: 500; color: var(--dark-text); min-width: 110px; display: inline-block; }
-        .payment-methods .account-details .acc-value { font-weight: 600; color: var(--dark-text); }
-
-        #confirmation-area { margin-top: 50px; }
+        .bank-item .icon { font-size: 1.5em; color: var(--accent-color); }
+        .bank-item .acc-details span { display: block; margin-bottom: 5px; }
+        .bank-item .acc-label { color: var(--secondary-text); min-width: 120px; display: inline-block; }
+        .bank-item .acc-value { font-weight: 600; }
 
         #confirmation-area {
-            border-top: 1px solid #eee; padding-top: 40px; max-width: 700px;
-            margin-left: auto; margin-right: auto; background-color: var(--card-bg);
-            padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
-            margin-bottom: 50px; 
+            max-width: 750px; margin: 50px auto; background-color: var(--bg-card);
+            padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .2); border-top: 4px solid var(--success-color);
         }
-
-        #transaction-form-section { text-align: left; transition: opacity .3s ease-out; }
-        #transaction-form-section h2 { font-size: 1.8em; text-align: left; border: none; margin-bottom: 25px; color: var(--primary-color); }
-        #transaction-form-section label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
-        #transaction-form-section input[type=text],
-        #transaction-form-section input[type=tel],
-        #transaction-form-section #coupon_code_form { 
-            width: calc(100% - 28px); padding: 14px; margin-bottom: 10px; 
-            border: 1px solid #ced4da; border-radius: 8px; font-size: 1em;
-            transition: border-color .2s ease, box-shadow .2s ease;
+        #transaction-form-section h2 { text-align: left; border: none; font-size: 1.8em; margin-bottom: 25px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 1.1em; color: var(--secondary-text); }
+        .form-group input {
+            width: 100%; padding: 14px; background-color: var(--bg-dark); color: var(--primary-text);
+            border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; font-family: inherit;
+            transition: border-color .3s ease, box-shadow .3s ease;
         }
-         #transaction-form-section #apply_coupon_form_btn { 
-            padding: 10px 15px; 
-            background-color: var(--info-color); 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.95em;
-            margin-bottom: 20px; 
-            display: inline-block;
-         }
-         #transaction-form-section #coupon_message_form { 
-            font-size: 0.9em;
-            margin-top: -15px; 
-            margin-bottom: 20px;
-            min-height: 18px;
-         }
-         #transaction-form-section #coupon_message_form .success { color: var(--success-color); font-weight: bold;}
-         #transaction-form-section #coupon_message_form .error { color: var(--danger-color); font-weight: bold;}
-
-
-        #transaction-form-section input[type=text]:focus,
-        #transaction-form-section input[type=tel]:focus,
-        #transaction-form-section #coupon_code_form:focus {
-            border-color: var(--primary-color); outline: none; box-shadow: 0 0 8px rgba(0, 86, 179, .3);
+        .form-group input:focus {
+            outline: none; border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
         }
-        #transaction-form-section .submit-button {
-            display: block; width: 100%; padding: 15px 25px; background-color: var(--success-color);
-            color: #fff; border: none; border-radius: 8px; cursor: pointer;
-            font-size: 1.2em; font-weight: 600; transition: background-color .3s ease;
+        .form-group input:read-only { background-color: #374151; cursor: not-allowed; }
+        
+        .submit-button {
+            width: 100%; padding: 15px 25px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1.2em; font-weight: 600; transition: all .3s ease;
+            font-family: inherit; background-color: var(--success-color); color: #fff;
         }
-        #transaction-form-section .submit-button:hover { background-color: #218838; }
+        .submit-button:hover { background-color: #059669; }
 
-        #loading-indicator { display: none; text-align: center; padding: 40px 20px; }
+        /* ==========================================================================
+           ৬. লোডিং ও সফল বার্তা স্টাইল
+           ========================================================================== */
+        #loading-indicator { text-align: center; padding: 40px; }
         .spinner {
-            border: 6px solid var(--light-bg); border-top: 6px solid var(--secondary-color);
+            border: 6px solid var(--border-color); border-top: 6px solid var(--accent-color);
             border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin: 0 auto 20px auto;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #loading-indicator p { font-size: 1.2em; color: var(--primary-color); font-weight: 500; }
-
-        .hidden { display: none !important; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); display: flex;
-            justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content {
-            background-color: #fff; padding: 30px 35px; border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 90%; max-width: 550px;
-            text-align: left; position: relative; transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-close-btn {
-            position: absolute; top: 15px; right: 20px; font-size: 2em;
-            color: #888; cursor: pointer; line-height: 1;
-        }
-        .modal-close-btn:hover { color: #555; }
-        .modal-content h3 { color: var(--primary-color); margin-top: 0; margin-bottom: 20px; font-size: 1.7em; }
-        .modal-content #modal-package-details-header { margin-bottom: 15px; }
-        .modal-content #modal-package-details {
-            margin-bottom: 20px; font-size: 1em; line-height: 1.6;
-            max-height: 180px; overflow-y: auto; border: 1px solid var(--border-color);
-            padding: 15px; border-radius: 8px; background-color: #f9fafb;
-        }
-        .modal-content #modal-package-details ul { padding-left: 20px; margin:0; }
-        .modal-content #modal-package-details li { margin-bottom: 5px; }
-        .modal-content #modal-package-price-info { font-size: 1.2em; font-weight: bold; color: var(--dark-text); margin-bottom: 15px; }
-        .modal-content #modal-package-price-info .original-price-modal { text-decoration: line-through; color: var(--light-text); font-size: 0.9em; margin-left: 10px; }
         
-        .modal-content #modal-select-package-btn { 
-            width: 100%; 
-            font-size: 1.1em; 
-            padding: 15px 25px;
-            background: var(--gradient-primary);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block !important; 
-            transition: all .3s ease;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(0, 92, 158, .4);
-            letter-spacing: .5px;
-            margin-top:20px;
-        }
-         .modal-content #modal-select-package-btn:hover {
-            background: var(--gradient-hover);
-            box-shadow: 0 8px 20px rgba(0, 92, 158, .6);
-            transform: translateY(-3px);
-        }
+        #success-view { text-align: center; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .success-icon { font-size: 5em; color: var(--success-color); margin-bottom: 20px; }
+        #success-view h1 { font-size: 2.5em; color: var(--success-color); margin-bottom: 10px; }
+        #success-view .message { font-size: 1.2em; color: var(--primary-text); margin-bottom: 30px; }
 
-        @media (max-width: 1200px) { .package-list { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); } }
+        .details-summary {
+            text-align: left; background-color: var(--bg-dark); padding: 25px; border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .details-summary p {
+            margin: 12px 0; display: flex; justify-content: space-between;
+            font-size: 1.1em; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color);
+        }
+        .details-summary p:last-child { border: none; }
+        .details-summary .label { color: var(--secondary-text); }
+        .details-summary .value { font-weight: 600; color: #fff; word-break: break-all; }
+        .details-summary .value.package-name { color: var(--accent-color); font-weight: 700; }
+        .details-summary .value.phone-number { color: var(--success-color); }
+        .details-summary .value.trx-id { color: var(--warning-color); font-family: monospace; }
+        
+        .back-button {
+            margin-top: 30px; padding: 12px 30px; background: var(--gradient-primary); color: #fff;
+            border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
+            transition: all .3s ease; font-weight: 600; font-size: 1.1em;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+        .back-button:hover { box-shadow: 0 6px 15px rgba(2, 132, 199, 0.5); transform: translateY(-2px); }
+
+        /* ==========================================================================
+           ৭. ফুটার ও রেসপন্সিভ ডিজাইন
+           ========================================================================== */
+        footer { text-align: center; padding: 30px 0; border-top: 1px solid var(--border-color); color: var(--secondary-text); margin-top: 50px; }
+
         @media (max-width: 992px) {
-            .package-list { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-            .package-card .advertised-speed, .package-card .data-limit { font-size: 3.8em; }
-            h1 { font-size: 2.8em; } h2 { font-size: 1.9em; }
+            .payment-grid { grid-template-columns: 1fr; }
+            .qr-code-container { margin-bottom: 30px; }
         }
         @media (max-width: 768px) {
-             .package-card .advertised-speed, .package-card .data-limit { font-size: 3.5em; }
-             .package-card .pricing .total-price { font-size: 1.9em; }
-             h1 { font-size: 2.5em; } h2 { font-size: 1.7em; }
-             .payment-methods { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 600px) {
-            .modal-content { padding: 20px 25px; }
-            .modal-content h3 { font-size: 1.5em; }
-            #transaction-form-section #coupon_code_form { width: calc(100% - 28px); margin-right: 0; margin-bottom: 10px;}
-            #transaction-form-section #apply_coupon_form_btn {width: 100%;}
-        }
-        @media (max-width: 480px) {
-            body { font-size: 15px; } .container { padding: 30px 15px; }
-            h1 { font-size: 2.2em; } h2 { font-size: 1.6em; }
-            .package-list { grid-template-columns: 1fr; gap: 25px; }
-            .package-card { padding: 25px; }
-            .package-card .advertised-speed, .package-card .data-limit { font-size: 3.2em; }
-            .package-card .pricing .total-price { font-size: 1.7em; }
-            #confirmation-area { padding: 20px; }
+            .container { padding: 30px 15px; }
+            .package-list { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5em; } h2 { font-size: 1.8em; }
         }
     </style>
 </head>
 <body>
-    <div id="main-content">
-        <div class="container">
-            <h1>Mikrotik Internet Management System</h1>
-            <p class="intro-text">আপনার বাজেট, ডেটা ও স্পিডের প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন। আনলিমিটেড বা ডেটা লিমিটেড - সব ধরণের প্যাকেজেই থাকছে নির্ভরযোগ্য সেবা ও ২৪/৭ সাপোর্ট।</p>
+
+    <div id="main-view">
+        <header class="container">
+            <h1>Level 3 Communication</h1>
+            <p class="intro-text">আপনার বাজেট ও প্রয়োজন অনুযায়ী সেরা ইন্টারনেট প্যাকেজটি বেছে নিন। নির্ভরযোগ্য সেবা ও ২৪/৭ সাপোর্টের নিশ্চয়তা।</p>
+        </header>
+
+        <main class="container">
+            <section id="home-packages">
+                <h2>হোম ইন্টারনেট প্যাকেজ</h2>
+                <p class="section-subtext">বাসা-বাড়িতে সাধারণ থেকে ভারী ব্যবহারের জন্য বিশেষভাবে তৈরি সাশ্রয়ী প্যাকেজ।</p>
+                <div class="package-list">
+                    <div class="package-card" data-package-name="হোম আলট্রা ২৪ Mbps" data-total-price="430.00" data-original-price="540.00"><span class="discount-badge">২০% ছাড়!</span><h3>হোম আলট্রা ২৪ Mbps</h3><div class="speed-display">24<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 24 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 20 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 540.00</span></div><p class="total-price">৳ 430.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <div class="package-card" data-package-name="হোম পাওয়ার ৪০ Mbps" data-total-price="650.00" data-original-price="870.00"><span class="discount-badge">২৫% ছাড়!</span><h3>হোম পাওয়ার ৪০ Mbps</h3><div class="speed-display">40<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 15 Mbps</span></p><p><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 40 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 30 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 870.00</span></div><p class="total-price">৳ 650.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                </div>
+            </section>
             
-            <h2>হোম ইন্টারনেট (রাউটার প্যাকেজ)</h2>
-            <p style="text-align:center; color:var(--info-color); margin-bottom:20px;">এই প্যাকেজগুলো বাসা-বাড়িতে রাউটার ব্যবহারের জন্য বিশেষভাবে তৈরি। (এই প্যাকেজগুলোতে কোনো কুপন ডিসকাউন্ট প্রযোজ্য নয়)</p>
-            <div class="package-list">
-                <div class="package-card"
-                     data-package-name="হোম প্যাক ১২ Mbps" 
-                     data-total-price="280.00" 
-                     data-original-price-before-discount="330.00" 
-                     data-upload-speed="10" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১৫% ছাড়!</span>
-                    <h3>হোম প্যাক ১২ Mbps</h3>
-                    <span class="advertised-speed">12<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 12 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 10 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>রাউটারের জন্য আদর্শ</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 330.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 280.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
+            <section id="data-limited-packages">
+                <h2>ডেটা লিমিটেড প্যাকেজ</h2>
+                <p class="section-subtext">আপনার প্রয়োজন অনুযায়ী বিভিন্ন মেয়াদের ডেটা প্যাকেজ থেকে বেছে নিন।</p>
+                <div class="package-list">
+                    <div class="package-card data-limited-card" data-package-name="সাপ্তাহিক ডেটা ২০ জিবি" data-total-price="113.00" data-original-price="135.00"><span class="discount-badge">১৬% ছাড়!</span><h3>সাপ্তাহিক ডেটা ২০ জিবি</h3><div class="data-display">20<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 25 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 25 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 7 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 135.00</span></div><p class="total-price">৳ 113.00 <small>/ ৭ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <div class="package-card data-limited-card" data-package-name="মাসিক ডেটা ৫০ জিবি" data-total-price="200.00" data-original-price="339.00"><span class="discount-badge">৪১% ছাড়!</span><h3>মাসিক ডেটা ৫০ জিবি</h3><div class="data-display">50<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 30 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 50 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 12 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 339.00</span></div><p class="total-price">৳ 200.00 <small>/ ৩০ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
                 </div>
+            </section>
+            
+            <section id="special-packages">
+                <h2>প্রফেশনাল ও বিশেষায়িত প্যাকেজ</h2>
+                <p class="section-subtext">কন্টেন্ট ক্রিয়েটর, গেমার ও ফ্রিল্যান্সারদের জন্য বিশেষভাবে ডিজাইন করা প্যাকেজ।</p>
+                <div class="package-list">
+                    <div class="package-card specialized-card" data-package-name="Gamer Pro 60 Mbps" data-total-price="800.00" data-original-price="1000.00"><span class="discount-badge">২০% ছাড়!</span><h3>Gamer Pro 60 Mbps</h3><div class="speed-display">60<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 25 Mbps (Low Latency)</span></p><p><span class="label">BDIX/ক্যাশ:</span> <span class="value">Up to 60 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 60 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1000.00</span></div><p class="total-price">৳ 800.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <div class="package-card specialized-card" data-package-name="Streamer Plus 50 Mbps" data-total-price="900.00" data-original-price="1100.00"><span class="discount-badge">১৮% ছাড়!</span><h3>Streamer Plus 50 Mbps</h3><div class="speed-display">50<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 20 Mbps</span></p><p><span class="label">BDIX/ক্যাশ:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">হাই আপলোড স্পিড:</span> <span class="value">Up to 100 Mbps</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1100.00</span></div><p class="total-price">৳ 900.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                </div>
+            </section>
 
-                <div class="package-card"
-                     data-package-name="হোম প্লাস ১৬ Mbps" 
-                     data-total-price="330.00" 
-                     data-original-price-before-discount="390.00" 
-                     data-upload-speed="12" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১৫% ছাড়!</span>
-                    <h3>হোম প্লাস ১৬ Mbps</h3>
-                    <span class="advertised-speed">16<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 6 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 16 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 12 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>মাল্টি-ডিভাইস কানেকশন</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 390.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 330.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card"
-                     data-package-name="হোম প্রো ২০ Mbps" 
-                     data-total-price="370.00" 
-                     data-original-price-before-discount="440.00" 
-                     data-upload-speed="15" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১৬% ছাড়!</span>
-                    <h3>হোম প্রো ২০ Mbps</h3>
-                    <span class="advertised-speed">20<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 8 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 20 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 15 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>স্মুথ স্ট্রিমিং ও গেমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 440.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 370.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card"
-                     data-package-name="হোম আলট্রা ২৪ Mbps" 
-                     data-total-price="430.00" 
-                     data-original-price-before-discount="540.00" 
-                     data-upload-speed="20" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">২০% ছাড়!</span>
-                    <h3>হোম আলট্রা ২৪ Mbps</h3>
-                    <span class="advertised-speed">24<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 24 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 20 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ফ্যামিলি ব্যবহারের জন্য সেরা</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 540.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 430.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card"
-                     data-package-name="হোম এক্সট্রিম ৩০ Mbps" 
-                     data-total-price="500.00" 
-                     data-original-price-before-discount="625.00" 
-                     data-upload-speed="25" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">২০% ছাড়!</span>
-                    <h3>হোম এক্সট্রিম ৩০ Mbps</h3>
-                    <span class="advertised-speed">30<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 30 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 25 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ভারী ব্যবহারের জন্য উপযুক্ত</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 625.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 500.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card"
-                     data-package-name="হোম পাওয়ার ৪০ Mbps" 
-                     data-total-price="650.00" 
-                     data-original-price-before-discount="870.00" 
-                     data-upload-speed="30" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">২৫% ছাড়!</span>
-                    <h3>হোম পাওয়ার ৪০ Mbps</h3>
-                    <span class="advertised-speed">40<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 15 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 40 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 30 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>4K স্ট্রিমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 870.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 650.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card"
-                     data-package-name="হোম গিগ ৬৬ Mbps" 
-                     data-total-price="800.00" 
-                     data-original-price-before-discount="1070.00" 
-                     data-upload-speed="50" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">২৫% ছাড়!</span>
-                    <h3>হোম গিগ ৬৬ Mbps</h3>
-                    <span class="advertised-speed">66<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 20 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 66 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 50 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>গেমিং ও লাইভ স্ট্রিমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1070.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 800.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card"
-                     data-package-name="হোম আল্টিমেট ১০০ Mbps" 
-                     data-total-price="1000.00" 
-                     data-original-price-before-discount="1430.00" 
-                     data-upload-speed="50" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৩০% ছাড়!</span>
-                    <h3>হোম আল্টিমেট ১০০ Mbps</h3>
-                    <span class="advertised-speed">100<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 25 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">Up to 100 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 50 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>প্রফেশনাল কাজের জন্য</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1430.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 1000.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-            </div>
-
-            <h2>ডেটা লিমিটেড প্যাকেজসমূহ (মোবাইল প্যাকের মতো)</h2>
-            <p style="text-align:center; color:var(--info-color); margin-bottom:20px;">ডেটা প্যাকেজগুলোতেও বিশেষ ছাড়!</p>
-            <div class="package-list">
-                <div class="package-card data-limited-card"
-                     data-package-name="দৈনিক ডেটা বুস্টার ৫ জিবি"
-                     data-total-price="33.90"
-                     data-original-price-before-discount="40.00"
-                     data-upload-speed="50" 
-                     data-data-limit="5 GB"
-                     data-validity-text="/ ১ দিন">
-                    <span class="discount-badge">১৫% ছাড়!</span>
-                    <h3>দৈনিক ডেটা বুস্টার ৫ জিবি</h3>
-                    <span class="data-limit">5 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ১ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">10 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">50 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>জরুরী প্রয়োজনে</li><li>দ্রুত ডাউনলোড</li><li>FUP স্পিড: 256 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 40.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 33.90 <small>/ ১ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card data-limited-card"
-                     data-package-name="৩-দিন মেয়াদী ১০ জিবি"
-                     data-total-price="60.00"
-                     data-original-price-before-discount="75.00"
-                     data-upload-speed="20" 
-                     data-data-limit="10 GB"
-                     data-validity-text="/ ৩ দিন">
-                    <span class="discount-badge">২০% ছাড়!</span>
-                    <h3>৩-দিন মেয়াদী ১০ জিবি</h3>
-                    <span class="data-limit">10 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">8 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">20 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>স্বল্পমেয়াদী ট্যুর বা কাজের জন্য</li><li>FUP স্পিড: 512 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 75.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 60.00 <small>/ ৩ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card data-limited-card"
-                     data-package-name="সাপ্তাহিক ডেটা প্যাক ২০ জিবি"
-                     data-total-price="113.00"
-                     data-original-price-before-discount="135.00"
-                     data-upload-speed="20" 
-                     data-data-limit="20 GB"
-                     data-validity-text="/ ৭ দিন">
-                    <span class="discount-badge">১৬% ছাড়!</span>
-                    <h3>সাপ্তাহিক ডেটা ২০ জিবি</h3>
-                    <span class="data-limit">20 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৭ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">5 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">20 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>স্বল্পমেয়াদী বেশি ব্যবহার</li><li>HD স্ট্রিমিং (সীমিত)</li><li>FUP স্পিড: 512 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 135.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 113.00 <small>/ ৭ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card data-limited-card"
-                     data-package-name="১৫ দিন মেয়াদী ৩০ জিবি (অফার)"
-                     data-total-price="160.00"
-                     data-original-price-before-discount="203.40"
-                     data-upload-speed="40" 
-                     data-data-limit="30 GB"
-                     data-validity-text="/ ১৫ দিন">
-                    <span class="discount-badge">২১% ছাড়!</span>
-                    <h3>১৫ দিন মেয়াদী ৩০ জিবি</h3>
-                    <span class="data-limit">30 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ১৫ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">8 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">40 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>মাঝারি মেয়াদের প্যাক</li><li>ভালো স্পিড</li><li>FUP স্পিড: 512 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 203.40</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 160.00 <small>/ ১৫ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card data-limited-card"
-                     data-package-name="মাসিক ডেটা প্যাক ১০ জিবি (অফার)"
-                     data-total-price="150.00" 
-                     data-original-price-before-discount="169.50"
-                     data-upload-speed="10" 
-                     data-data-limit="10 GB"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">১১% ছাড়!</span>
-                    <h3>মাসিক ডেটা ১০ জিবি</h3>
-                    <span class="data-limit">10 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">2 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">10 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>নির্দিষ্ট ডেটা ব্যবহারের জন্য</li><li>সাধারণ ব্রাউজিং</li><li>FUP স্পিড: 256 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 169.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 150.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card data-limited-card"
-                     data-package-name="মাসিক ডেটা প্যাক ৫০ জিবি (অফার)"
-                     data-total-price="200.00" 
-                     data-original-price-before-discount="339.00"
-                     data-upload-speed="50" 
-                     data-data-limit="50 GB"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">৪১% ছাড়!</span>
-                    <h3>মাসিক ডেটা ৫০ জিবি</h3>
-                    <span class="data-limit">50 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">10 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">50 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>মাঝারি ব্যবহারের জন্য</li><li>HD স্ট্রিমিং ও ডাউনলোড</li><li>FUP স্পিড: 1 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 339.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 200.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                 <div class="package-card data-limited-card"
-                     data-package-name="মাসিক পাওয়ার প্যাক ১০০ জিবি (অফার)"
-                     data-total-price="240.00"
-                     data-original-price-before-discount="565.00"
-                     data-upload-speed="100" 
-                     data-data-limit="100 GB"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">৫৭% ছাড়!</span>
-                    <h3>মাসিক পাওয়ার প্যাক ১০০ জিবি</h3>
-                    <span class="data-limit">100 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">20 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ভারী ব্যবহারের জন্য</li><li>গেমিং ও 4K স্ট্রিমিং</li><li>FUP স্পিড: 1.5 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 565.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 240.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card data-limited-card"
-                     data-package-name="ত্রৈমাসিক প্যাক ২৫০ জিবি (অফার)"
-                     data-total-price="749.00"
-                     data-original-price-before-discount="904.00"
-                     data-upload-speed="80" 
-                     data-data-limit="250 GB"
-                     data-validity-text="/ ৯০ দিন">
-                    <span class="discount-badge">১৭% ছাড়!</span>
-                    <h3>ত্রৈমাসিক প্যাক ২৫০ জিবি</h3>
-                    <span class="data-limit">250 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৯০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">15 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">80 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>দীর্ঘমেয়াদী ব্যবহার</li><li>সাশ্রয়ী</li><li>FUP স্পিড: 1 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 904.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 749.00 <small>/ ৯০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card data-limited-card"
-                     data-package-name="মাসিক স্পিডস্টার ৫০ জিবি (অফার)"
-                     data-total-price="230.00"
-                     data-original-price-before-discount="678.00"
-                     data-upload-speed="100" 
-                     data-data-limit="50 GB"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">৬৬% ছাড়!</span>
-                    <h3>মাসিক স্পিডস্টার ৫০ জিবি</h3>
-                    <span class="data-limit">50 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">40 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>দ্রুত গতির অভিজ্ঞতা</li><li>সীমিত কিন্তু দ্রুত ডেটা</li><li>FUP স্পিড: 2 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 678.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 230.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card data-limited-card"
-                     data-package-name="মাসিক আলট্রা ডেটা ২০০ জিবি (অফার)"
-                     data-total-price="246.00"
-                     data-original-price-before-discount="904.00"
-                     data-upload-speed="100" 
-                     data-data-limit="200 GB"
-                     data-validity-text="/ ৩০ দিন">
-                     <span class="discount-badge">৭২% ছাড়!</span>
-                    <h3>মাসিক আলট্রা ডেটা ২০০ জিবি</h3>
-                    <span class="data-limit">200 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">30 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>হেভি ইউজার স্পেশাল</li><li>4K স্ট্রিমিং ও গেমিং</li><li>FUP স্পিড: 2 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 904.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 246.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                <div class="package-card data-limited-card"
-                     data-package-name="হেভি ডাউনলোড ৭৫ জিবি (অফার)"
-                     data-total-price="210.00"
-                     data-original-price-before-discount="508.50"
-                     data-upload-speed="100" 
-                     data-data-limit="75 GB"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">৫৯% ছাড়!</span>
-                    <h3>হেভি ডাউনলোড ৭৫ জিবি</h3>
-                    <span class="data-limit">75 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">25 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ডাউনলোড ফোকাসড</li><li>4K স্ট্রিমিং</li><li>FUP স্পিড: 1.5 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 508.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 210.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card data-limited-card"
-                     data-package-name="ইউটিউব/ফেসবুক প্যাক (অফার)"
-                     data-total-price="190.00"
-                     data-original-price-before-discount="282.50"
-                     data-upload-speed="20" 
-                     data-data-limit="YT/FB +১০ জিবি"
-                     data-validity-text="/ ৩০ দিন">
-                    <span class="discount-badge">৩২% ছাড়!</span>
-                    <h3>ইউটিউব/ফেসবুক প্যাক*</h3>
-                    <span class="data-limit">YT/FB<small>+১০ জিবি</small></span>
-                    <span class="validity">মেয়াদ: ৩০ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট (অন্যান্য):</span> <span class="value">5 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">20 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ইউটিউব/ফেসবুক*</li><li>১০ জিবি অন্যান্য ব্যবহার</li><li>FUP (অন্যান্য): 256 Kbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 282.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 190.00 <small>/ ৩০ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card data-limited-card"
-                     data-package-name="বার্ষিক মেগা সেভার ৫০০ জিবি (বিশেষ অফার)"
-                     data-total-price="2570.75" 
-                     data-original-price-before-discount="2825.00"
-                     data-upload-speed="50" 
-                     data-data-limit="500 GB"
-                     data-validity-text="/ ৩৬৫ দিন">
-                    <span class="discount-badge">৯% ছাড়! (বার্ষিক)</span>
-                    <h3>বার্ষিক মেগা সেভার ৫০০ জিবি</h3>
-                    <span class="data-limit">500 <small>GB</small></span>
-                    <span class="validity">মেয়াদ: ৩৬৫ দিন</span>
-                    <div class="speed-details">
-                        <p class="speed-limit"><span class="label">স্পিড লিমিট:</span> <span class="value">10 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">50 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>পুরো বছরের জন্য</li><li>অত্যন্ত সাশ্রয়ী</li><li>FUP স্পিড: 1 Mbps*</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2825.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 2570.75 <small>/ ৩৬৫ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-            </div>
-
-            <h2>হাই-স্পিড আনলিমিটেড প্যাকেজসমূহ </h2>
-            <p style="text-align:center; color:var(--info-color); margin-bottom:20px;">এই সেকশনের প্যাকেজগুলোর মূল্য উল্লেখযোগ্যভাবে কমানো হয়েছে।</p>
-            <div class="package-list">
-                 <div class="package-card"
-                     data-package-name="টাইটানিয়াম প্যাক 55 Mbps (অফার)"
-                     data-total-price="249.00"
-                     data-original-price-before-discount="904.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭২% ছাড়!</span>
-                    <h3>টাইটানিয়াম প্যাক</h3>
-                    <span class="advertised-speed">55<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">55 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ভারী ডাউনলোড/আপলোড</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 904.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 249.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="আলটিমেট প্যাক 70 Mbps (অফার)"
-                     data-total-price="246.00"
-                     data-original-price-before-discount="1130.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭৮% ছাড়!</span>
-                    <h3>আলটিমেট প্যাক</h3>
-                    <span class="advertised-speed">70<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">70 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>পাওয়ার ইউজারদের জন্য</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1130.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 246.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                 <div class="package-card"
-                     data-package-name="এক্সট্রিম প্যাক 85 Mbps (অফার)"
-                     data-total-price="243.00"
-                     data-original-price-before-discount="1356.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮২% ছাড়!</span>
-                    <h3>এক্সট্রিম প্যাক</h3>
-                    <span class="advertised-speed">85<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">85 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>সর্বোচ্চ পারফর্মেন্স</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1356.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 243.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="গিগা কানেক্ট 95 Mbps (অফার)"
-                     data-total-price="239.00"
-                     data-original-price-before-discount="1695.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৫% ছাড়!</span>
-                    <h3>গিগা কানেক্ট</h3>
-                    <span class="advertised-speed">95<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">95 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>ভবিষ্যতের জন্য প্রস্তুত</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1695.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 239.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="Gamer Choice 55 Mbps (অফার)"
-                     data-total-price="235.00"
-                     data-original-price-before-discount="1808.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৭% ছাড়!</span>
-                    <h3>Gamer Choice</h3>
-                    <span class="advertised-speed">55<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps (Low Latency)</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">55 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>গেমিংয়ের জন্য অপ্টিমাইজড</li><li>কম লেটেন্সি</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1808.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 235.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="Family Plus 70 Mbps (অফার)"
-                     data-total-price="232.00"
-                     data-original-price-before-discount="2034.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৮% ছাড়!</span>
-                    <h3>Family Plus</h3>
-                    <span class="advertised-speed">70<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">70 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>একাধিক ডিভাইসের জন্য সেরা</li><li>স্মুথ স্ট্রিমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2034.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 232.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="Power User প্যাক 95 Mbps (অফার)"
-                     data-total-price="228.00"
-                     data-original-price-before-discount="2486.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৯০% ছাড়!</span>
-                    <h3>Power User প্যাক</h3>
-                    <span class="advertised-speed">95<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">95 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>সর্বোচ্চ পারফর্মেন্স</li><li>পাওয়ার ইউজারদের জন্য</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2486.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 228.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card"
-                     data-package-name="Gigabit Lite 100 Mbps+ (অফার)"
-                     data-total-price="220.00"
-                     data-original-price-before-discount="3051.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৯২% ছাড়!</span>
-                    <h3>Gigabit Lite</h3>
-                    <span class="advertised-speed">100<small>Mbps+</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">100+ Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">100 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>অতি দ্রুত গতি</li><li>ভবিষ্যতের জন্য প্রস্তুত</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 3051.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 220.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-            </div>
-
-            <h2>বিশেষায়িত আনলিমিটেড প্যাকেজসমূহ </h2>
-            <p style="text-align:center; color:var(--info-color); margin-bottom:20px;">এই সেকশনের প্যাকেজগুলোর মূল্যও আকর্ষণীয় অফারে দেওয়া হচ্ছে।</p>
-            <div class="package-list">
-                 <div class="package-card upload-focused"
-                     data-package-name="Creator প্যাক 20 Mbps (অফার)"
-                     data-total-price="220.00" 
-                     data-original-price-before-discount="678.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৬৭% ছাড়!</span>
-                    <h3>Creator প্যাক</h3>
-                    <span class="advertised-speed">20<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">20 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">হাই আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li>কনটেন্ট ক্রিয়েটরদের জন্য</li><li>দ্রুত ফাইল আপলোড</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 678.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 220.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Streamer Pro 25 Mbps (অফার)"
-                     data-total-price="230.00"
-                     data-original-price-before-discount="1017.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭৭% ছাড়!</span>
-                    <h3>Streamer Pro</h3>
-                    <span class="advertised-speed">25<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">25 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">হাই আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li>লাইভ স্ট্রিমারদের জন্য সেরা</li><li>উচ্চ মানের স্ট্রিমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1017.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 230.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="WFH Ultra 11 Mbps (অফার)"
-                     data-total-price="210.00"
-                     data-original-price-before-discount="452.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৫৩% ছাড়!</span>
-                    <h3>WFH Ultra</h3>
-                    <span class="advertised-speed">11<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">4 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">11 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">সুপিরিয়র আপলোড:</span> <span class="value">100 Mbps !</span></p>
-                    </div>
-                    <div class="features"><ul><li>ভিডিও কনফারেন্সিং</li><li>স্থিতিশীল সংযোগ</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 452.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 210.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Content King 45 Mbps (অফার)"
-                     data-total-price="240.00"
-                     data-original-price-before-discount="1469.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৩% ছাড়!</span>
-                    <h3>Content King</h3>
-                    <span class="advertised-speed">45<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">45 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">এক্সট্রিম আপলোড:</span> <span class="value">100 Mbps !!!</span></p>
-                    </div>
-                    <div class="features"><ul><li>বড় ফাইল ও ভিডিও আপলোড</li><li>ইউটিউবার ও এডিটরদের জন্য</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1469.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 240.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card symmetric-focused"
-                     data-package-name="Symmetric Basic 20 Mbps (অফার)"
-                     data-total-price="225.00"
-                     data-original-price-before-discount="791.00"
-                     data-upload-speed="50" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭১% ছাড়!</span>
-                    <h3>Symmetric Basic</h3>
-                    <span class="advertised-speed">20<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">20 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">সিমেট্রিক আপলোড:</span> <span class="value">50 Mbps !</span></p>
-                    </div>
-                    <div class="features"><ul><li>সমান ডাউনলোড (মেইন)/আপলোড</li><li>নির্দিষ্ট কাজের জন্য</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 791.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 225.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card symmetric-focused"
-                     data-package-name="Symmetric Pro 45 Mbps (অফার)"
-                     data-total-price="247.00"
-                     data-original-price-before-discount="1695.00"
-                     data-upload-speed="50" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৫% ছাড়!</span>
-                    <h3>Symmetric Pro</h3>
-                    <span class="advertised-speed">45<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">45 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">সিমেট্রিক আপলোড:</span> <span class="value">50 Mbps !</span></p>
-                    </div>
-                    <div class="features"><ul><li>সমান ডাউনলোড (মেইন)/আপলোড</li><li>উচ্চ পারফর্মেন্স</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1695.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 247.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Video Editor স্পেশাল 35 Mbps (অফার)"
-                     data-total-price="235.00"
-                     data-original-price-before-discount="1469.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৪% ছাড়!</span>
-                    <h3>Video Editor স্পেশাল</h3>
-                    <span class="advertised-speed">35<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">35 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">এক্সট্রা আপলোড:</span> <span class="value">100 Mbps !!!</span></p>
-                    </div>
-                    <div class="features"><ul><li>বড় ভিডিও ফাইল আপলোডের জন্য</li><li>দ্রুত রেন্ডার আপলোড</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1469.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 235.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Freelancer Pro 40 Mbps (অফার)"
-                     data-total-price="215.00"
-                     data-original-price-before-discount="960.50"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭৭% ছাড়!</span>
-                    <h3>Freelancer Pro</h3>
-                    <span class="advertised-speed">40<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">40 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">ফাস্ট আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li>বড় ফাইল শেয়ারিং</li><li>নির্ভরযোগ্য আপলোড</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 960.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 215.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Cloud Worker 40 Mbps (অফার)"
-                     data-total-price="205.00"
-                     data-original-price-before-discount="847.50"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৭৫% ছাড়!</span>
-                    <h3>Cloud Worker</h3>
-                    <span class="advertised-speed">40<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ:</span> <span class="value">40 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">ফাস্ট আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li>ক্লাউড স্টোরেজ ব্যবহারকারীদের জন্য</li><li>বড় ফাইল সিঙ্ক</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 847.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 205.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="Turbo Upload 60 Mbps (অফার)"
-                     data-total-price="250.00"
-                     data-original-price-before-discount="2034.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৭% ছাড়!</span>
-                    <h3>Turbo Upload</h3>
-                    <span class="advertised-speed">60<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">5 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">60 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">টার্বো আপলোড:</span> <span class="value">100 Mbps !!!</span></p>
-                    </div>
-                    <div class="features"><ul><li>প্রফেশনাল ভিডিওগ্রাফার/এডিটর</li><li>সর্বোচ্চ আপলোড স্পিড</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2034.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 250.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card symmetric-focused"
-                     data-package-name="Symmetric Micro 15 Mbps (অফার)"
-                     data-total-price="190.00"
-                     data-original-price-before-discount="565.00"
-                     data-upload-speed="30" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৬৬% ছাড়!</span>
-                    <h3>Symmetric Micro</h3>
-                    <span class="advertised-speed">15<small>Mbps</small></span> 
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">3 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">15 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">সিমেট্রিক আপলোড:</span> <span class="value">30 Mbps !</span></p>
-                    </div>
-                    <div class="features"><ul><li>ছোট আপলোড নির্ভর কাজ</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 565.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 190.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                <div class="package-card upload-focused"
-                     data-package-name="4K Streamer 75 Mbps (অফার)"
-                     data-total-price="280.00"
-                     data-original-price-before-discount="2200.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৭% ছাড়!</span>
-                    <h3>4K Streamer</h3>
-                    <span class="advertised-speed">75<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">10 Mbps</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">75 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">হাই আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li>বাফার-ফ্রি 4K স্ট্রিমিং</li><li>একাধিক ডিভাইস সাপোর্ট</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2200.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 280.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                 <div class="package-card upload-focused"
-                     data-package-name="Pro-Gamer Elite 100 Mbps (অফার)"
-                     data-total-price="320.00"
-                     data-original-price-before-discount="2500.00"
-                     data-upload-speed="100" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮৭% ছাড়!</span>
-                    <h3>Pro-Gamer Elite</h3>
-                    <span class="advertised-speed">100<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="main-speed"><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">20 Mbps (Low Latency)</span></p>
-                        <p class="bdix-speed"><span class="label">BDIX/ক্যাশ স্পিড:</span> <span class="value">100 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">হাই আপলোড:</span> <span class="value">100 Mbps !!</span></p>
-                    </div>
-                    <div class="features"><ul><li> সর্বনিম্ন পিং ও ল্যাটেন্সি</li><li>কম্পিটিটিভ গেমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 2500.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 320.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-            </div>
-
-            <h2>সাশ্রয়ী আনলিমিটেড প্যাকেজ </h2>
-            <div class="package-list">
-                <div class="package-card under-200" 
-                     data-package-name="দৈনিক আনলিমিটেড ৫ Mbps" 
-                     data-total-price="20.00" 
-                     data-original-price-before-discount="25.00"
-                     data-upload-speed="2.5" 
-                     data-validity-text="/ ১ দিন">
-                    <span class="discount-badge">২০% ছাড়!</span>
-                    <h3>দৈনিক আনলিমিটেড</h3>
-                    <span class="advertised-speed">5<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">5 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">2.5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ডাটা (১ দিন)</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 25.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 20.00 <small>/ ১ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-                
-                 <div class="package-card under-200" 
-                     data-package-name="সাপ্তাহিক সেভার ৮ Mbps" 
-                     data-total-price="100.00" 
-                     data-original-price-before-discount="120.00"
-                     data-upload-speed="5" 
-                     data-validity-text="/ ৭ দিন">
-                    <span class="discount-badge">১৬% ছাড়!</span>
-                    <h3>সাপ্তাহিক সেভার</h3>
-                    <span class="advertised-speed">8<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">8 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ডাটা (৭ দিন)</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 120.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 100.00 <small>/ ৭ দিন</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card under-200" 
-                     data-package-name="এন্ট্রি প্যাক 5 Mbps" 
-                     data-total-price="113.00" 
-                     data-original-price-before-discount="130.00"
-                     data-upload-speed="2.5" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১৩% ছাড়!</span>
-                    <h3>এন্ট্রি প্যাক</h3>
-                    <span class="advertised-speed">5<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">5 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">2.5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 130.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 113.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card under-200"
-                     data-package-name="স্ট্যান্ডার্ড প্যাক 7 Mbps (অফার)"
-                     data-total-price="155.00" 
-                     data-original-price-before-discount="169.50"
-                     data-upload-speed="5" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৮% ছাড়!</span>
-                    <h3>স্ট্যান্ডার্ড প্যাক</h3>
-                    <span class="advertised-speed">7<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">7 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 169.50</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 155.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                 <div class="package-card under-200"
-                     data-package-name="সিলভার প্যাক 10 Mbps (অফার)"
-                     data-total-price="170.00"
-                     data-original-price-before-discount="197.75"
-                     data-upload-speed="10" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১৪% ছাড়!</span>
-                    <h3>সিলভার প্যাক</h3>
-                    <span class="advertised-speed">10<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">10 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">10 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 197.75</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 170.00 <small>/ মাস</small></p>
-                         <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card under-200"
-                     data-package-name="ইকো স্টার্টার 8 Mbps (অফার)"
-                     data-total-price="152.00"
-                     data-original-price-before-discount="158.20"
-                     data-upload-speed="5" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">৪% ছাড়!</span>
-                    <h3>ইকো স্টার্টার</h3>
-                    <span class="advertised-speed">8<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">8 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>সাধারণ ব্রাউজিং ও সোশ্যাল মিডিয়া</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 158.20</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 152.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card under-200"
-                     data-package-name="ছাত্র বন্ধু 6 Mbps"
-                     data-total-price="135.60"
-                     data-original-price-before-discount="150.00"
-                     data-upload-speed="5" 
-                     data-validity-text="/ মাস">
-                    <span class="discount-badge">১০% ছাড়!</span>
-                    <h3>ছাত্র বন্ধু</h3>
-                    <span class="advertised-speed">6<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">6 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">5 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>শিক্ষার্থীদের জন্য সাশ্রয়ী</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 150.00</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 135.60 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-
-                <div class="package-card under-200"
-                     data-package-name="লাইট কানেক্ট 12 Mbps (অফার)"
-                     data-total-price="160.00"
-                     data-original-price-before-discount="192.10"
-                     data-upload-speed="10" 
-                     data-validity-text="/ মাস">
-                     <span class="discount-badge">১৬% ছাড়!</span>
-                    <h3>লাইট কানেক্ট</h3>
-                    <span class="advertised-speed">12<small>Mbps</small></span>
-                    <div class="speed-details">
-                        <p class="total-speed"><span class="label">মোট স্পিড (মেইন + BDIX):</span> <span class="value">12 Mbps</span></p>
-                        <p class="upload-speed high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">10 Mbps</span></p>
-                    </div>
-                    <div class="features"><ul><li>হালকা স্ট্রিমিং</li><li>আনলিমিটেড ডাটা</li><li>২৪/৭ সাপোর্ট</li></ul></div>
-                    <div class="pricing">
-                        <div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 192.10</span></div>
-                        <p class="total-price">অফার মূল্য: ৳ 160.00 <small>/ মাস</small></p>
-                        <span class="vat-info">(VAT সহ)</span>
-                    </div>
-                    <button class="select-button package-trigger-btn">এই প্যাকেজটি নিন</button>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h2>পেমেন্ট মাধ্যম</h2>
-                <ul class="payment-methods">
-                    <li class="qr-code-item">
-                        <strong style="font-size: 1.3em;">নিচের QR কোডটি স্ক্যান করে সহজেই পেমেন্ট সম্পন্ন করুন</strong>
-                        <div class="account-details">
-                            <img src="https://i.ibb.co/VYYnxyGH/Pay-Logo.jpg" alt="Payment QR Code" style="max-width: 320px; height: auto; margin-top: 15px; border: 2px solid #ddd; padding: 5px; border-radius: 8px;">
+            <section id="payment-section">
+                <h2>পেমেন্ট করার পদ্ধতি</h2>
+                <div class="payment-grid">
+                    <div class="qr-code-container">
+                        <h3>QR কোড স্ক্যান করে পেমেন্ট করুন</h3>
+                        <img src="https://i.ibb.co/VYYnxyGH/Pay-Logo.jpg" alt="Payment QR Code">
+                        <p style="color: var(--secondary-text); margin-top: 10px;">যেকোনো ব্যাংক বা পেমেন্ট অ্যাপ থেকে স্ক্যান করুন</p>
+                    </div>
+                    <div class="bank-details-grid">
+                        <div class="bank-item">
+                            <strong><i class="fas fa-university icon"></i>United Commercial Bank</strong>
+                            <div class="acc-details">
+                                <span><span class="acc-label">Account Name:</span> <span class="acc-value">Level 3 Communication</span></span>
+                                <span><span class="acc-label">Account No:</span> <span class="acc-value">011 2105 000000 123</span></span>
+                                <span><span class="acc-label">Branch:</span> <span class="acc-value">Principal Branch, Dhaka</span></span>
+                            </div>
                         </div>
-                    </li>
-                    <li>
-                        <strong><i class="fas fa-university icon"></i>United Commercial Bank</strong>
-                        <div class="account-details">
-                            <span><span class="acc-label">Account Name:</span> Your Company Name Ltd.</span>
-                            <span><span class="acc-label">Account No:</span> <span class="acc-value">011 2105 000000 123</span></span>
-                            <span><span class="acc-label">Branch:</span> Principal Branch, Dhaka</span>
+                        <div class="bank-item">
+                            <strong><i class="fas fa-university icon"></i>City Bank Ltd.</strong>
+                            <div class="acc-details">
+                                <span><span class="acc-label">Account Name:</span> <span class="acc-value">Level 3 Communication</span></span>
+                                <span><span class="acc-label">Account No:</span> <span class="acc-value">140 118 7654 321</span></span>
+                                <span><span class="acc-label">Branch:</span> <span class="acc-value">Gulshan Avenue Branch</span></span>
+                            </div>
                         </div>
-                    </li>
-                    <li>
-                        <strong><i class="fas fa-university icon"></i>City Bank Ltd.</strong>
-                        <div class="account-details">
-                            <span><span class="acc-label">Account Name:</span> Service Provider Inc.</span>
-                            <span><span class="acc-label">Account No:</span> <span class="acc-value">140 118 7654 321</span></span>
-                            <span><span class="acc-label">Branch:</span> Gulshan Avenue Branch</span>
-                        </div>
-                    </li>
-                    <li>
-                        <strong><i class="fas fa-university icon"></i>Islami Bank Bangladesh Ltd.</strong>
-                        <div class="account-details">
-                            <span><span class="acc-label">Account Name:</span> Your Network Solution</span>
-                            <span><span class="acc-label">Account No:</span> <span class="acc-value">2050 177 0100 1234 08</span></span>
-                            <span><span class="acc-label">Branch:</span> Dhanmondi Branch</span>
-                        </div>
-                    </li>
-                    <li>
-                        <strong><i class="fas fa-university icon"></i>Dutch-Bangla Bank Ltd.</strong>
-                        <div class="account-details">
-                            <span><span class="acc-label">Account Name:</span> Internet Service Ltd.</span>
-                            <span><span class="acc-label">Account No:</span> <span class="acc-value">155.110.0009876</span></span>
-                            <span><span class="acc-label">Branch:</span> Motijheel Branch</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div id="confirmation-area">
+                    </div>
+                </div>
+            </section>
+            
+            <section id="confirmation-area">
                 <div id="transaction-form-section">
                     <h2>পেমেন্টের তথ্য জমা দিন</h2>
-                    <form id="payment-confirmation-form" onsubmit="handleFormSubmit(event)">
-                        <label for="phone_number">আপনার ফোন নম্বর:</label>
-                        <input type="tel" id="phone_number" name="phone_number" placeholder="যে নম্বরে প্যাকেজ চালু করতে চান" required pattern="01[3-9]\d{8}">
-
-                        <label for="transaction_id">আপনার Transaction ID / পেমেন্ট রেফারেন্স:</label>
-                        <input type="text" id="transaction_id" name="transaction_id" placeholder="যেমন: bKash TrxID 9XG7K3L8MNP / Bank Slip No" required>
-
-                        <label for="package_mention">কোন প্যাকেজের জন্য পেমেন্ট করেছেন?</label>
-                        <input type="text" id="package_mention" name="package_mention" placeholder="প্যাকেজ সিলেক্ট করলে এখানে নাম অটো আসবে" required readonly>
-                        
-                        <label for="coupon_code_form">কুপন কোড (যদি থাকে):</label>
-                        <input type="text" id="coupon_code_form" name="coupon_code_form" placeholder="এখানে কুপন কোড লিখুন">
-                        <button type="button" id="apply_coupon_form_btn">কুপন প্রয়োগ করুন</button>
-                        <div id="coupon_message_form"></div>
-
-
-                        <label for="payment_amount">টাকার পরিমাণ (VAT ও ডিসকাউন্ট সহ):</label>
-                        <input type="text" id="payment_amount" name="payment_amount" placeholder="প্যাকেজ সিলেক্ট করলে এখানে মূল্য অটো আসবে" required readonly inputmode="decimal">
-
+                    <form id="payment-confirmation-form">
+                        <div class="form-group">
+                            <label for="package_mention">নির্বাচিত প্যাকেজ:</label>
+                            <input type="text" id="package_mention" name="package_mention" placeholder="উপরে যেকোনো প্যাকেজ সিলেক্ট করুন" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_number">আপনার ফোন নম্বর:</label>
+                            <input type="tel" id="phone_number" name="phone_number" placeholder="যে নম্বরে প্যাকেজ চালু হবে (যেমন: 01...)" required pattern="01[3-9]\d{8}">
+                        </div>
+                        <div class="form-group">
+                            <label for="transaction_id">Transaction ID / পেমেন্ট রেফারেন্স:</label>
+                            <input type="text" id="transaction_id" name="transaction_id" placeholder="Bank Transaction ID / Slip No." required>
+                        </div>
+                        <div class="form-group">
+                             <label for="payment_amount">সর্বমোট মূল্য (টাকায়):</label>
+                            <input type="text" id="payment_amount" name="payment_amount" placeholder="প্যাকেজ সিলেক্ট করলে মূল্য অটো আসবে" required readonly inputmode="decimal">
+                        </div>
                         <button type="submit" class="submit-button">নিশ্চিত করুন ও প্যাকেজ চালু করুন</button>
                     </form>
                 </div>
                 <div id="loading-indicator" class="hidden">
                     <div class="spinner"></div>
-                    <p>আপনার অনুরোধ প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+                    <p>আপনার অনুরোধ প্রসেস করা হচ্ছে...</p>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>© ২০২৪ - Level 3 Communication। সর্বস্বত্ব সংরক্ষিত।</p>
+        </footer>
     </div>
 
-    <div id="package-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <span class="modal-close-btn">&times;</span>
-            <h3 id="modal-package-name">প্যাকেজের নাম</h3>
-            <div id="modal-package-details-header">
-            </div>
-            <div id="modal-package-details">
-            </div>
-            <p id="modal-package-price-info">মোট মূল্য: ৳ <span id="modal-final-price">0.00</span> <small id="modal-validity"></small> 
-                <span id="modal-original-price-container" class="hidden">(<span class="original-price-modal">পূর্বমূল্য: ৳ <span id="modal-original-price-value">0.00</span></span>)</span>
-            </p>
-            <button id="modal-select-package-btn" class="select-button">এই প্যাকেজটি নিন</button>
-        </div>
+    <div id="success-view" class="container hidden">
+         <!-- সফল বার্তা এখানে জাভাস্ক্রিপ্ট দ্বারা তৈরি হবে -->
     </div>
 
     <script>
-        const mainContent = document.getElementById('main-content');
-        const confirmationArea = document.getElementById('confirmation-area');
-        const transactionFormSection = document.getElementById('transaction-form-section');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const formElement = document.getElementById('payment-confirmation-form');
-        
-        const packageMentionInput = document.getElementById('package_mention');
-        const phoneNumberInput = document.getElementById('phone_number');
-        const transactionIdInput = document.getElementById('transaction_id');
-        const paymentAmountInput = document.getElementById('payment_amount');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainView = document.getElementById('main-view');
+            const successView = document.getElementById('success-view');
+            const confirmationArea = document.getElementById('confirmation-area');
+            const transactionFormSection = document.getElementById('transaction-form-section');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const formElement = document.getElementById('payment-confirmation-form');
 
-        const couponCodeFormInput = document.getElementById('coupon_code_form');
-        const applyCouponFormBtn = document.getElementById('apply_coupon_form_btn');
-        const couponMessageForm = document.getElementById('coupon_message_form');
+            const packageMentionInput = document.getElementById('package_mention');
+            const phoneNumberInput = document.getElementById('phone_number');
+            const transactionIdInput = document.getElementById('transaction_id');
+            const paymentAmountInput = document.getElementById('payment_amount');
 
-        const packageModal = document.getElementById('package-modal');
-        const modalPackageName = document.getElementById('modal-package-name');
-        const modalPackageDetailsHeader = document.getElementById('modal-package-details-header');
-        const modalPackageDetails = document.getElementById('modal-package-details');
-        const modalFinalPrice = document.getElementById('modal-final-price'); 
-        const modalValidity = document.getElementById('modal-validity');
-        const modalOriginalPriceContainer = document.getElementById('modal-original-price-container');
-        const modalOriginalPriceValue = document.getElementById('modal-original-price-value');
-        const modalSelectPackageBtn = document.getElementById('modal-select-package-btn');
-        const modalCloseBtn = packageModal.querySelector('.modal-close-btn');
+            document.querySelectorAll('.select-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.package-card');
+                    const packageName = card.dataset.packageName;
+                    const price = parseFloat(card.dataset.totalPrice);
+                    
+                    packageMentionInput.value = packageName;
+                    paymentAmountInput.value = price.toFixed(2);
 
-        let currentModalPackageData = null; 
-        let currentSelectedPackageForForm = null; 
+                    confirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    phoneNumberInput.focus({ preventScroll: true });
 
-        function formatPrice(price) {
-            return parseFloat(price).toFixed(2);
-        }
-        
-        function getOriginalUploadSpeedFromCard(cardElement) {
-            const speedDetailsElement = cardElement.querySelector('.speed-details');
-            if (speedDetailsElement) {
-                const uploadSpeedP = speedDetailsElement.querySelector('.upload-speed .value');
-                if (uploadSpeedP) {
-                    const match = uploadSpeedP.textContent.match(/(\d*\.?\d+)/);
-                    return match ? parseFloat(match[1]) : 0;
-                }
-            }
-            return 0;
-        }
-
-        function openPackageModal(packageCardElement) {
-            const packageName = packageCardElement.dataset.packageName;
-            const priceOnCardString = packageCardElement.dataset.totalPrice;
-            const originalPriceBeforeDiscountString = packageCardElement.dataset.originalPriceBeforeDiscount;
-            const packageUploadSpeed = parseFloat(packageCardElement.dataset.uploadSpeed || getOriginalUploadSpeedFromCard(packageCardElement) || 0);
-
-
-            if (!priceOnCardString || !originalPriceBeforeDiscountString) {
-                console.error("Price data missing for package:", packageName);
-                return; 
-            }
-
-            const priceOnCard = parseFloat(priceOnCardString);
-            const originalPriceBeforeDiscountOnCard = parseFloat(originalPriceBeforeDiscountString);
-            
-            const validityText = packageCardElement.dataset.validityText || "/ মাস";
-            const dataLimit = packageCardElement.querySelector('.data-limit');
-            const advertisedSpeedEl = packageCardElement.querySelector('.advertised-speed');
-            
-            currentModalPackageData = { 
-                name: packageName,
-                priceOnCard: priceOnCard,
-                originalPriceBeforeAnyDiscount: originalPriceBeforeDiscountOnCard,
-                validity: validityText,
-                uploadSpeed: packageUploadSpeed,
-            };
-
-            modalPackageName.textContent = packageName;
-
-            if (dataLimit) {
-                modalPackageDetailsHeader.innerHTML = `<span class="data-limit" style="font-size: 2.5em; color: var(--accent-color); display: block; text-align:center; margin-bottom:10px;">${dataLimit.innerHTML}</span> <span class="validity" style="display:block; text-align:center; margin-bottom:15px;">${packageCardElement.querySelector('.validity').textContent}</span>`;
-            } else if (advertisedSpeedEl) {
-                modalPackageDetailsHeader.innerHTML = `<span class="advertised-speed" style="font-size: 3em; color: var(--speed-color); display: block; text-align:center; margin-bottom:15px;">${advertisedSpeedEl.innerHTML}</span>`;
-            } else {
-                modalPackageDetailsHeader.innerHTML = '';
-            }
-            
-            const speedDetailsElement = packageCardElement.querySelector('.speed-details');
-            const featuresElement = packageCardElement.querySelector('.features');
-            let detailsHtmlContent = '';
-            if (speedDetailsElement) {
-                const clonedSpeedDetails = speedDetailsElement.cloneNode(true);
-                const uploadSpeedPModal = clonedSpeedDetails.querySelector('.upload-speed');
-                if (uploadSpeedPModal) {
-                    const valueSpanModal = uploadSpeedPModal.querySelector('.value');
-                    if (valueSpanModal) {
-                        valueSpanModal.textContent = `${currentModalPackageData.uploadSpeed} Mbps`; 
-                        if (currentModalPackageData.uploadSpeed > getOriginalUploadSpeedFromCard(speedDetailsElement) ) { 
-                           uploadSpeedPModal.classList.add('high-upload');
-                        } else {
-                           uploadSpeedPModal.classList.remove('high-upload');
-                        }
-                    }
-                }
-                detailsHtmlContent += `<h4>স্পিড বিবরণ:</h4>${clonedSpeedDetails.innerHTML}`;
-            }
-            if (featuresElement) {
-                detailsHtmlContent += `<h4 style="margin-top:15px;">বৈশিষ্ট্য:</h4>${featuresElement.innerHTML}`;
-            }
-            modalPackageDetails.innerHTML = detailsHtmlContent;
-            
-            modalFinalPrice.textContent = formatPrice(currentModalPackageData.priceOnCard); 
-            modalValidity.textContent = validityText;
-            
-            if (currentModalPackageData.priceOnCard < currentModalPackageData.originalPriceBeforeAnyDiscount) {
-                modalOriginalPriceValue.textContent = formatPrice(currentModalPackageData.originalPriceBeforeAnyDiscount);
-                modalOriginalPriceContainer.classList.remove('hidden');
-            } else {
-                modalOriginalPriceContainer.classList.add('hidden');
-            }
-            
-            packageModal.classList.add('active');
-        }
-        
-        function closePackageModal() {
-            packageModal.classList.remove('active');
-        }
-        
-        function scrollToFormAndFill(packageNameFromCard, priceStringFromCard) {
-            const priceOnCard = parseFloat(priceStringFromCard);
-
-            currentSelectedPackageForForm = {
-                name: packageNameFromCard,
-                priceOnCard: priceOnCard,
-                finalPayablePrice: priceOnCard,
-            };
-
-            packageMentionInput.value = currentSelectedPackageForForm.name;
-            paymentAmountInput.value = formatPrice(currentSelectedPackageForForm.finalPayablePrice);
-            couponCodeFormInput.value = ''; 
-            couponMessageForm.innerHTML = ''; 
-
-            if (confirmationArea) {
-                if (transactionFormSection) transactionFormSection.classList.remove('hidden');
-                if (loadingIndicator) loadingIndicator.classList.add('hidden');
-                
-                confirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                transactionFormSection.style.transition = 'background-color 0.5s ease';
-                transactionFormSection.style.backgroundColor = '#e9f7ff';
-                setTimeout(() => {
-                    transactionFormSection.style.backgroundColor = 'var(--card-bg)'; 
-                }, 1000);
-                phoneNumberInput.focus();
-            }
-        }
-
-
-        function applyCouponFromForm() {
-            if (!currentSelectedPackageForForm) {
-                couponMessageForm.innerHTML = '<span class="error">অনুগ্রহ করে প্রথমে একটি প্যাকেজ সিলেক্ট করুন।</span>';
-                return;
-            }
-
-            const couponCode = couponCodeFormInput.value.trim().toUpperCase();
-            const basePriceForCoupon = currentSelectedPackageForForm.priceOnCard;
-            let finalPrice = basePriceForCoupon;
-            let message = '';
-
-            if (currentSelectedPackageForForm.name.includes("হোম")) {
-                message = '<span class="error">দুঃখিত, হোম ইন্টারনেট প্যাকেজে কুপন প্রযোজ্য নয়।</span>';
-                finalPrice = basePriceForCoupon;
-                if (couponCode !== "") {
-                    couponCodeFormInput.value = '';
-                }
-            } else if (couponCode === "DIS10") {
-                if (basePriceForCoupon > 150) {
-                    finalPrice = basePriceForCoupon * 0.90;
-                    message = `<span class="success">Dis10 কুপন সফলভাবে প্রয়োগ করা হয়েছে!</span>`;
-                } else {
-                    message = '<span class="error">দুঃখিত, Dis10 কুপনটি ৳১৫০ এর বেশি মূল্যের প্যাকেজে প্রযোজ্য।</span>';
-                }
-            } else if (couponCode === "DIS20") {
-                if (basePriceForCoupon > 200) {
-                    finalPrice = basePriceForCoupon * 0.80;
-                    message = `<span class="success">Dis20 কুপন সফলভাবে প্রয়োগ করা হয়েছে!</span>`;
-                } else {
-                    message = '<span class="error">দুঃখিত, Dis20 কুপনটি ৳২০০ এর বেশি মূল্যের প্যাকেজে প্রযোজ্য।</span>';
-                }
-            } else if (couponCode === "") {
-                 message = ''; 
-            }
-            else {
-                message = '<span class="error">অবৈধ কুপন কোড।</span>';
-            }
-            
-            currentSelectedPackageForForm.finalPayablePrice = finalPrice;
-            paymentAmountInput.value = formatPrice(finalPrice);
-            couponMessageForm.innerHTML = message;
-        }
-
-        document.querySelectorAll('.package-trigger-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const card = this.closest('.package-card');
-                scrollToFormAndFill(card.dataset.packageName, card.dataset.totalPrice);
+                    transactionFormSection.style.transition = 'background-color 0.5s ease, box-shadow 0.5s ease';
+                    transactionFormSection.style.backgroundColor = '#374151';
+                    transactionFormSection.style.boxShadow = `0 0 20px rgba(14, 165, 233, 0.3)`;
+                    setTimeout(() => {
+                        transactionFormSection.style.backgroundColor = 'var(--bg-card)';
+                        transactionFormSection.style.boxShadow = 'none';
+                    }, 1500);
+                });
             });
-        });
-        
-        document.querySelectorAll('.package-card').forEach(card => {
-            card.addEventListener('click', function(event) {
-                if (event.target.classList.contains('package-trigger-btn') || event.target.closest('.package-trigger-btn')) {
+
+            formElement.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = {
+                    package: packageMentionInput.value,
+                    phone: phoneNumberInput.value,
+                    trxId: transactionIdInput.value,
+                    amount: paymentAmountInput.value
+                };
+
+                if (!formData.package || !formData.phone || !formData.trxId) {
+                    alert('অনুগ্রহ করে সকল তথ্য পূরণ করুন।');
                     return;
                 }
-                openPackageModal(this);
+
+                transactionFormSection.classList.add('hidden');
+                loadingIndicator.classList.remove('hidden');
+
+                setTimeout(() => {
+                    mainView.classList.add('hidden');
+                    successView.classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                    
+                    successView.innerHTML = `
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h1>অ্যাক্টিভেশন অনুরোধ সফল!</h1>
+                        <p class="message">আপনার প্যাকেজ অ্যাক্টিভেশনের অনুরোধটি সফলভাবে জমা হয়েছে। যাচাই করে শীঘ্রই চালু করা হবে।</p>
+                        <div class="details-summary">
+                            <p><span class="label">প্যাকেজের নাম:</span> <span class="value package-name">${formData.package}</span></p>
+                            <p><span class="label">ব্যবহারকারী (মোবাইল):</span> <span class="value phone-number">${formData.phone}</span></p>
+                            <p><span class="label">পেমেন্ট রেফারেন্স (TrxID):</span> <span class="value trx-id">${formData.trxId}</span></p>
+                            <p><span class="label">পরিশোধিত অর্থ:</span> <span class="value">৳ ${formData.amount}</span></p>
+                        </div>
+                        <button id="back-to-home-btn" class="back-button">হোম পেজে ফিরে যান</button>
+                    `;
+
+                    document.getElementById('back-to-home-btn').addEventListener('click', () => {
+                        successView.classList.add('hidden');
+                        successView.innerHTML = '';
+                        mainView.classList.remove('hidden');
+                        formElement.reset();
+                        transactionFormSection.classList.remove('hidden');
+                        loadingIndicator.classList.add('hidden');
+                    });
+
+                }, 1500);
             });
         });
-
-
-        modalCloseBtn.addEventListener('click', closePackageModal);
-        modalSelectPackageBtn.addEventListener('click', function() {
-            if (currentModalPackageData) {
-                 scrollToFormAndFill(currentModalPackageData.name, currentModalPackageData.priceOnCard.toString());
-                 closePackageModal();
-            }
-        }); 
-
-        packageModal.addEventListener('click', function(event) {
-            if (event.target === packageModal) {
-                closePackageModal();
-            }
-        });
-
-        if(applyCouponFormBtn) {
-            applyCouponFormBtn.addEventListener('click', applyCouponFromForm);
-        }
-
-        function handleFormSubmit(event) {
-            event.preventDefault(); 
-
-            const phoneNumber = phoneNumberInput.value;
-            const transactionId = transactionIdInput.value;
-            const packageNameFromForm = packageMentionInput.value; 
-            const paymentAmountFromForm = paymentAmountInput.value; 
-
-            if (!phoneNumber || !transactionId || !packageNameFromForm || !paymentAmountFromForm) {
-                alert('অনুগ্রহ করে ফোন নম্বর, ট্রানজেকশন আইডি, প্যাকেজের নাম এবং টাকার পরিমাণ পূরণ করুন।');
-                return; 
-            }
-
-            const phonePattern = /^01[3-9]\d{8}$/;
-            if (!phonePattern.test(phoneNumber)) {
-                alert('অনুগ্রহ করে সঠিক ১১ ডিজিটের ফোন নম্বর দিন।');
-                return;
-            }
-
-            if (transactionFormSection) transactionFormSection.style.display = 'none';
-            if (loadingIndicator) loadingIndicator.style.display = 'block';
-
-            const targetUrlBase = "https://microticnetworksolution.github.io/paymentsuccesful/";
-            const queryParams = new URLSearchParams({
-                phone: phoneNumber,
-                trxid: transactionId,
-                package: packageNameFromForm, 
-                amount: paymentAmountFromForm  
-            });
-
-            const redirectUrl = `${targetUrlBase}?${queryParams.toString()}`;
-
-            setTimeout(() => {
-                window.location.href = redirectUrl;
-            }, 1000); 
-        }
-
-        if (formElement) {
-            formElement.addEventListener('submit', handleFormSubmit);
-        }
-
     </script>
 </body>
 </html>
-
