@@ -352,6 +352,19 @@
                             <label for="package_mention">নির্বাচিত প্যাকেজ:</label>
                             <input type="text" id="package_mention" name="package_mention" placeholder="উপরে যেকোনো প্যাকেজ সিলেক্ট করুন" required readonly>
                         </div>
+
+                        <!-- নতুন ইনপুট ফিল্ড: ব্যবহারকারীর নাম -->
+                        <div class="form-group">
+                            <label for="user_name">ব্যবহারকারীর নাম:</label>
+                            <input type="text" id="user_name" name="user_name" placeholder="আপনার পুরো নাম লিখুন" required>
+                        </div>
+                        
+                        <!-- নতুন ইনপুট ফিল্ড: ইউজার আইডি -->
+                        <div class="form-group">
+                            <label for="user_id">ইউজার আইডি:</label>
+                            <input type="text" id="user_id" name="user_id" placeholder="আপনার ইন্টারনেট ইউজার আইডি" required>
+                        </div>
+
                         <div class="form-group">
                             <label for="phone_number">আপনার ফোন নম্বর:</label>
                             <input type="tel" id="phone_number" name="phone_number" placeholder="01945695008" required pattern="01[3-9]\d{8}">
@@ -360,6 +373,13 @@
                             <label for="transaction_id">Transaction ID / পেমেন্ট রেফারেন্স:</label>
                             <input type="text" id="transaction_id" name="transaction_id" placeholder="Bank Transaction ID / Slip No." required>
                         </div>
+                        
+                        <!-- নতুন ইনপুট ফিল্ড: কুপন কোড (ঐচ্ছিক) -->
+                        <div class="form-group">
+                            <label for="coupon_code">কুপন কোড (ঐচ্ছিক):</label>
+                            <input type="text" id="coupon_code" name="coupon_code" placeholder="যদি কোনো কুপন কোড থাকে">
+                        </div>
+
                         <div class="form-group">
                              <label for="payment_amount">সর্বমোট মূল্য (টাকায়):</label>
                             <input type="text" id="payment_amount" name="payment_amount" placeholder="প্যাকেজ সিলেক্ট করলে মূল্য অটো আসবে" required readonly inputmode="decimal">
@@ -392,7 +412,10 @@
             const loadingIndicator = document.getElementById('loading-indicator');
             const formElement = document.getElementById('payment-confirmation-form');
             const packageMentionInput = document.getElementById('package_mention');
+            const userNameInput = document.getElementById('user_name');
+            const userIdInput = document.getElementById('user_id');
             const phoneNumberInput = document.getElementById('phone_number');
+            const couponCodeInput = document.getElementById('coupon_code');
             const paymentAmountInput = document.getElementById('payment_amount');
 
             document.querySelectorAll('.select-button').forEach(button => {
@@ -401,7 +424,7 @@
                     packageMentionInput.value = card.dataset.packageName;
                     paymentAmountInput.value = parseFloat(card.dataset.totalPrice).toFixed(2);
                     confirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    phoneNumberInput.focus({ preventScroll: true });
+                    userNameInput.focus({ preventScroll: true });
                 });
             });
 
@@ -410,35 +433,52 @@
 
                 const formData = {
                     package: packageMentionInput.value,
+                    userName: userNameInput.value,
+                    userId: userIdInput.value,
                     phone: phoneNumberInput.value,
                     trxId: document.getElementById('transaction_id').value,
+                    couponCode: couponCodeInput.value,
                     amount: paymentAmountInput.value
                 };
 
-                if (!formData.package || !formData.phone || !formData.trxId) {
-                    alert('অনুগ্রহ করে সকল তথ্য পূরণ করুন।');
+                if (!formData.package || !formData.userName || !formData.userId || !formData.phone || !formData.trxId) {
+                    alert('অনুগ্রহ করে প্যাকেজ, নাম, ইউজার আইডি, ফোন নম্বর এবং ট্রানজেকশন আইডি পূরণ করুন।');
                     return;
                 }
                 
                 transactionFormSection.classList.add('hidden');
                 loadingIndicator.classList.remove('hidden');
 
+                const submissionTime = new Date().toLocaleString('en-BD', {
+                    timeZone: 'Asia/Dhaka', day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+                });
+
                 // =====================================================================
                 // আপনার টেলিগ্রাম তথ্য এখানে যুক্ত করা হয়েছে
                 // =====================================================================
-                const botToken = '8324432625:AAFRmY1W-QiC3s1sv6ZB5GfmzvzJd7bkrls'; // আপনার বট টোকেন
-                const chatId = '7929680940';                                     // আপনার চ্যাট আইডি
+                const botToken = '8324432625:AAFRmY1W-QiC3s1sv6ZB5GfmzvzJd7bkrls';
+                const chatId = '7929680940';
                 // =====================================================================
 
-                const message = `
-*🔔 Level3 Carrier Ltd. - নতুন প্যাকেজ অনুরোধ*
+                let message = `
+*🔔 Level3 Carrier Ltd. - নতুন পেমেন্ট তথ্য*
 ----------------------------------
-*👤 ব্যবহারকারীর ফোন:* \`${formData.phone}\`
+*📅 জমাদানের সময়:* ${submissionTime}
+----------------------------------
+*👤 ব্যবহারকারীর নাম:* ${formData.userName}
+*🆔 ইউজার আইডি:* \`${formData.userId}\`
+*📞 ব্যবহারকারীর ফোন:* \`${formData.phone}\`
 *📦 নির্বাচিত প্যাকেজ:* ${formData.package}
 *💵 পরিশোধিত অর্থ:* ৳${formData.amount}
 *💳 ট্রানজেকশন আইডি:* \`${formData.trxId}\`
-----------------------------------
 `;
+                
+                // যদি কুপন কোড থাকে, তবেই মেসেজে যুক্ত হবে
+                if (formData.couponCode) {
+                    message += `*🎟️ কুপন কোড:* \`${formData.couponCode}\`\n`;
+                }
+                message += `----------------------------------`;
 
                 const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
@@ -454,7 +494,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        showSuccessView(formData);
+                        showSuccessView(formData, submissionTime);
                     } else {
                         throw new Error(`টেলিগ্রামে মেসেজ পাঠানো যায়নি। সমস্যা: ${data.description}`);
                     }
@@ -467,22 +507,35 @@
                 });
             });
 
-            function showSuccessView(formData) {
+            function showSuccessView(formData, submissionTime) {
                 mainView.classList.add('hidden');
                 successView.classList.remove('hidden');
                 window.scrollTo(0, 0);
                 
+                let successDetailsHTML = `
+                    <p><span class="label">জমাদানের সময়:</span> <span class="value">${submissionTime}</span></p>
+                    <p><span class="label">ব্যবহারকারীর নাম:</span> <span class="value">${formData.userName}</span></p>
+                    <p><span class="label">ইউজার আইডি:</span> <span class="value">${formData.userId}</span></p>
+                    <p><span class="label">আপনার মোবাইল নম্বর:</span> <span class="value phone-number">${formData.phone}</span></p>
+                    <p><span class="label">প্যাকেজের নাম:</span> <span class="value package-name">${formData.package}</span></p>
+                    <p><span class="label">পেমেন্ট রেফারেন্স (TrxID):</span> <span class="value trx-id">${formData.trxId}</span></p>
+                `;
+                
+                // যদি কুপন কোড থাকে, তবেই সফলতার পৃষ্ঠায় দেখানো হবে
+                if (formData.couponCode) {
+                    successDetailsHTML += `<p><span class="label">ব্যবহৃত কুপন:</span> <span class="value">${formData.couponCode}</span></p>`;
+                }
+                
+                successDetailsHTML += `<p><span class="label">পরিশোধিত অর্থ:</span> <span class="value">৳ ${formData.amount}</span></p>`;
+
                 successView.innerHTML = `
                     <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                     <h1>অনুরোধ সফলভাবে জমা হয়েছে!</h1>
-                    <p class="message">আপনার প্যাকেজ অ্যাক্টিভেশনের অনুরোধটি আমরা পেয়েছি। যাচাই করে শীঘ্রই আপনার প্যাকেজটি চালু করা হবে।</p>
+                    <p class="message">আপনার পেমেন্টের তথ্য আমরা পেয়েছি। যাচাই করে শীঘ্রই আপনার প্যাকেজটি চালু বা রিনিউ করা হবে।</p>
                     <div class="details-summary">
-                        <p><span class="label">প্যাকেজের নাম:</span> <span class="value package-name">${formData.package}</span></p>
-                        <p><span class="label">আপনার মোবাইল নম্বর:</span> <span class="value phone-number">${formData.phone}</span></p>
-                        <p><span class="label">পেমেন্ট রেফারেন্স (TrxID):</span> <span class="value trx-id">${formData.trxId}</span></p>
-                        <p><span class="label">পরিশোধিত অর্থ:</span> <span class="value">৳ ${formData.amount}</span></p>
+                        ${successDetailsHTML}
                     </div>
-                    <button id="back-to-home-btn" class="back-button">নতুন প্যাকেজ কিনুন</button>
+                    <button id="back-to-home-btn" class="back-button">নতুন পেমেন্ট করুন</button>
                 `;
 
                 document.getElementById('back-to-home-btn').addEventListener('click', () => {
