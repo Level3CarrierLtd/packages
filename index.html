@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level3 Carrier Ltd. - ইন্টারনেট প্যাকেজ</title>
+    <title>Level3 Carrier Ltd. - Full Service Portal</title>
     <!-- Google Fonts: Noto Sans Bengali -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,6 +45,17 @@
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 25px; }
         .hidden { display: none !important; }
+
+        /* স্ক্রল অ্যানিমেশন */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* ==========================================================================
            ৩. টাইপোগ্রাফি (শিরোনাম, প্যারাগ্রাফ)
@@ -135,10 +146,31 @@
         .speed-details .label { color: var(--secondary-text); margin-right: 10px; }
         .speed-details .value { font-weight: 600; color: #fff; }
         .speed-details .high-upload .value { color: var(--success-color); font-weight: 700; }
-        .speed-details .fup-speed .value { color: var(--warning-color); } /* FUP স্পিডের জন্য নতুন স্টাইল */
+        .speed-details .fup-speed .value { color: var(--warning-color); }
         .package-card.specialized-card .speed-details .high-upload .value::after {
             content: ' 🔥'; color: var(--warning-color);
         }
+
+        .free-services {
+            margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-color);
+            text-align: left;
+        }
+        .free-services h4 {
+            color: var(--accent-color); margin-bottom: 12px; font-size: 1.1em;
+            text-align: center; font-weight: 600;
+        }
+        .free-services-list {
+            list-style: none; padding: 0; margin: 0; display: flex;
+            flex-direction: column; gap: 8px;
+        }
+        .free-services-list li a {
+            color: var(--primary-text); text-decoration: none; font-weight: 500;
+            transition: color 0.2s ease; display: flex; align-items: center;
+            gap: 10px; padding: 8px 12px; border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        .free-services-list li a:hover { background-color: var(--accent-color); color: #fff; }
+        .free-services-list li a .icon { width: 20px; text-align: center; }
         
         .pricing { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); }
         .old-price-container { min-height: 1.2em; margin-bottom: 4px; }
@@ -156,71 +188,150 @@
         .select-button:hover { box-shadow: 0 8px 20px rgba(2, 132, 199, .6); transform: translateY(-3px); }
 
         /* ==========================================================================
-           ৫. পেমেন্ট ও ফর্ম স্টাইল
+           ৪.১ এন্টারটেইনমেন্ট জোন সেকশন
            ========================================================================== */
-        #payment-section {
-            margin-top: 60px; padding: 40px; background-color: rgba(31, 41, 55, 0.5);
-            border-radius: 12px; border: 1px solid var(--border-color);
-        }
-        .payment-grid {
+        .entertainment-grid {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
+        .service-card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px; text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--success-color); display: flex; flex-direction: column;
+        }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); border-color: var(--success-color); }
+        .service-icon { font-size: 3.5em; color: var(--success-color); margin-bottom: 20px; }
+        .service-card h3 { color: #fff; font-size: 1.6em; margin-bottom: 10px; }
+        .service-card p { color: var(--secondary-text); margin-bottom: 25px; flex-grow: 1; }
+        .service-button {
+            padding: 12px 25px; background: transparent; color: var(--success-color);
+            border: 2px solid var(--success-color); border-radius: 50px; text-decoration: none;
+            font-weight: 600; transition: all .3s ease; margin-top: auto;
+        }
+        .service-button:hover { background-color: var(--success-color); color: #fff; }
+        
+        #entertainment-zone .social-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        #entertainment-zone .social-item {
+            background-color: var(--bg-card);
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        #entertainment-zone .social-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: var(--accent-color);
+        }
+        #entertainment-zone .social-item i {
+            font-size: 2.5em;
+            transition: color 0.3s ease;
+            width: 40px;
+            text-align: center;
+        }
+        #entertainment-zone .social-item span {
+            color: var(--primary-text);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        .fa-facebook-f { color: #1877F2; } .fa-youtube { color: #FF0000; } .fa-tiktok { color: #fff; }
+        .fa-snapchat { color: #FFFC00; } .fa-vimeo-v { color: #1AB7EA; } .fa-instagram { color: #E4405F; }
+        .fa-twitter { color: #1DA1F2; } .fa-whatsapp { color: #25D366; } .fa-play-circle { color: #E50914; }
+        .fa-heart { color: #DE1278; } .fa-reddit-alien { color: #FF4500; } .fa-spotify { color: #1DB954; }
+        .fa-linkedin-in { color: #0A66C2; } .fa-pinterest-p { color: #E60023; } .fa-telegram { color: #24A1DE; }
+        .fa-discord { color: #5865F2; } .fa-twitch { color: #9146FF; }
+
+        /* ==========================================================================
+           ৫. অন্যান্য সেকশন: স্ট্যাটাস, FAQ, সাপোর্ট
+           ========================================================================== */
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .status-item { background: var(--bg-card); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .status-item .status-text { font-size: 1.1em; }
+        .status-indicator { font-weight: 700; padding: 5px 12px; border-radius: 20px; font-size: 0.9em; }
+        .status-indicator.operational { color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
+        .status-indicator.maintenance { color: #f59e0b; background-color: rgba(245, 158, 11, 0.1); }
+
+        .faq-accordion .faq-item { border-bottom: 1px solid var(--border-color); }
+        .faq-accordion .faq-question { width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-size: 1.2em; color: var(--primary-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .faq-accordion .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-accordion .faq-answer p { padding: 0 10px 20px; color: var(--secondary-text); }
+        .faq-question .icon { transition: transform 0.3s ease; }
+        .faq-item.active .faq-question .icon { transform: rotate(180deg); }
+
+        #support-ticket-section { background-color: var(--bg-card); padding: 40px; border-radius: 12px; border-top: 4px solid var(--accent-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #support-ticket-form { display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 20px; }
+        @media (min-width: 768px) {
+            #support-ticket-form { grid-template-columns: 1fr 1fr; }
+            .form-group.full-width { grid-column: 1 / -1; }
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 8px; font-weight: 600; color: var(--secondary-text); font-size: 0.95em; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper .icon { position: absolute; left: 15px; color: var(--secondary-text); font-size: 1.1em; pointer-events: none; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 15px; background-color: var(--bg-dark); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--primary-text); font-size: 1em; font-family: 'Noto Sans Bengali', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #support-ticket-form .form-group input { padding-left: 45px; } /* Only for support form inputs */
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+        }
+        #support-ticket-form .submit-button {
+            grid-column: 1 / -1; background: var(--gradient-primary); color: #fff; border: none; padding: 16px;
+            border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #support-ticket-form .submit-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3); }
+
+        /* ==========================================================================
+           ৬. পেমেন্ট ও ফর্ম স্টাইল
+           ========================================================================== */
+        #payment-section { margin-top: 60px; padding: 40px; background-color: rgba(31, 41, 55, 0.5); border-radius: 12px; border: 1px solid var(--border-color); }
+        .payment-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+        @media (min-width: 992px) { .payment-grid { grid-template-columns: 1fr 1.5fr; } }
         .qr-code-container { text-align: center; }
         .qr-code-container h3 { font-size: 1.5em; margin-bottom: 15px; color: #fff; }
-        .qr-code-container img {
-            max-width: 250px; width: 100%; height: auto; border: 5px solid #fff;
-            border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .bank-details-grid {
-            display: grid; grid-template-columns: 1fr; gap: 20px;
-        }
-        .bank-item {
-            background-color: var(--bg-card); padding: 20px;
-            border-radius: 10px; border-left: 4px solid var(--accent-color);
-        }
-        .bank-item strong {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 1.2em; color: #fff; margin-bottom: 10px;
-        }
+        .qr-code-container img { max-width: 250px; width: 100%; height: auto; border: 5px solid #fff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .bank-details-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .bank-item { background-color: var(--bg-card); padding: 20px; border-radius: 10px; border-left: 4px solid var(--accent-color); }
+        .bank-item strong { display: flex; align-items: center; gap: 10px; font-size: 1.2em; color: #fff; margin-bottom: 10px; }
         .bank-item .icon { font-size: 1.5em; color: var(--accent-color); }
         .bank-item .acc-details span { display: block; margin-bottom: 5px; }
         .bank-item .acc-label { color: var(--secondary-text); min-width: 120px; display: inline-block; }
         .bank-item .acc-value { font-weight: 600; }
 
-        #confirmation-area {
-            max-width: 750px; margin: 50px auto; background-color: var(--bg-card);
-            padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .2); border-top: 4px solid var(--success-color);
-        }
-        #transaction-form-section h2 { text-align: left; border: none; font-size: 1.8em; margin-bottom: 25px; }
+        #confirmation-area { max-width: 750px; margin: 50px auto; background-color: var(--bg-card); padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); border-top: 4px solid var(--success-color); }
+        #transaction-form-section h2 { text-align: left; border: none; font-size: 1.8em; margin-bottom: 25px; padding-bottom:0; }
+        #transaction-form-section h2::after { display: none; }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 1.1em; color: var(--secondary-text); }
-        .form-group input {
-            width: 100%; padding: 14px; background-color: var(--bg-dark); color: var(--primary-text);
-            border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; font-family: inherit;
-            transition: border-color .3s ease, box-shadow .3s ease;
-        }
-        .form-group input:focus {
-            outline: none; border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
-        }
-        .form-group input:read-only { background-color: #374151; cursor: not-allowed; }
+        #payment-confirmation-form .form-group input { padding: 14px; } /* Specific padding for payment form */
+        #payment-confirmation-form .form-group input:read-only { background-color: #374151; cursor: not-allowed; }
         
         .submit-button {
-            width: 100%; padding: 15px 25px; border: none; border-radius: 8px;
-            cursor: pointer; font-size: 1.2em; font-weight: 600; transition: all .3s ease;
-            font-family: inherit; background-color: var(--success-color); color: #fff;
+            width: 100%; padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer;
+            font-size: 1.2em; font-weight: 600; transition: all .3s ease; font-family: inherit;
+            background-color: var(--success-color); color: #fff;
         }
         .submit-button:hover { background-color: #059669; }
 
         /* ==========================================================================
-           ৬. লোডিং ও সফল বার্তা স্টাইল
+           ৭. লোডিং, সফল বার্তা ও ফুটার
            ========================================================================== */
-        #loading-indicator { text-align: center; padding: 40px; }
+        .loading-indicator { text-align: center; padding: 40px; }
         .spinner {
             border: 6px solid var(--border-color); border-top: 6px solid var(--accent-color);
             border-radius: 50%; width: 50px; height: 50px;
@@ -228,26 +339,21 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        #success-view { text-align: center; animation: fadeIn 0.5s ease-out; }
+        .success-view { text-align: center; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .success-icon { font-size: 5em; color: var(--success-color); margin-bottom: 20px; }
-        #success-view h1 { font-size: 2.5em; color: var(--success-color); margin-bottom: 10px; }
-        #success-view .message { font-size: 1.2em; color: var(--primary-text); margin-bottom: 30px; }
+        .success-view h1 { font-size: 2.5em; color: var(--success-color); margin-bottom: 10px; }
+        .success-view .message { font-size: 1.2em; color: var(--primary-text); margin-bottom: 30px; }
 
-        .details-summary {
-            text-align: left; background-color: var(--bg-dark); padding: 25px; border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        .details-summary p {
-            margin: 12px 0; display: flex; justify-content: space-between;
-            font-size: 1.1em; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color);
-        }
+        .details-summary { text-align: left; background-color: var(--bg-dark); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .details-summary p { margin: 12px 0; display: flex; justify-content: space-between; font-size: 1.1em; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); }
         .details-summary p:last-child { border: none; }
         .details-summary .label { color: var(--secondary-text); }
         .details-summary .value { font-weight: 600; color: #fff; word-break: break-all; }
         .details-summary .value.package-name { color: var(--accent-color); font-weight: 700; }
         .details-summary .value.phone-number { color: var(--success-color); }
         .details-summary .value.trx-id { color: var(--warning-color); font-family: monospace; }
+        .details-summary .value.expiry-date { color: var(--danger-color); font-weight: 700; }
         
         .back-button {
             margin-top: 30px; padding: 12px 30px; background: var(--gradient-primary); color: #fff;
@@ -257,18 +363,20 @@
         }
         .back-button:hover { box-shadow: 0 6px 15px rgba(2, 132, 199, 0.5); transform: translateY(-2px); }
 
-        /* ==========================================================================
-           ৭. ফুটার ও রেসপন্সিভ ডিজাইন
-           ========================================================================== */
+        .live-chat-btn {
+            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
+            background: var(--gradient-primary); color: #fff; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 1.8em;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+            z-index: 1000; transition: transform 0.3s ease;
+        }
+        .live-chat-btn:hover { transform: scale(1.1); }
+
         footer { text-align: center; padding: 30px 0; border-top: 1px solid var(--border-color); color: var(--secondary-text); margin-top: 50px; }
 
-        @media (max-width: 992px) {
-            .payment-grid { grid-template-columns: 1fr; }
-            .qr-code-container { margin-bottom: 30px; }
-        }
         @media (max-width: 768px) {
             .container { padding: 30px 15px; }
-            .package-list { grid-template-columns: 1fr; }
+            .package-list, .entertainment-grid { grid-template-columns: 1fr; }
             h1 { font-size: 2.5em; } h2 { font-size: 1.8em; }
         }
     </style>
@@ -277,45 +385,161 @@
 
     <div id="main-view">
         <header class="container">
-            <h1>Level3 Carrier Ltd.</h1>
-            <p class="intro-text">আপনার বাজেট ও প্রয়োজন অনুযায়ী সেরা ইন্টারনেট প্যাকেজটি বেছে নিন। নির্ভরযোগ্য সেবা ও ২৪/৭ সাপোর্টের নিশ্চয়তা।</p>
+            <h1 class="fade-in">Level3 Carrier Ltd.</h1>
+            <p class="intro-text fade-in">আপনার বাজেট ও প্রয়োজন অনুযায়ী সেরা ইন্টারনেট প্যাকেজটি বেছে নিন। নির্ভরযোগ্য সেবা ও ২৪/৭ সাপোর্টের নিশ্চয়তা।</p>
         </header>
 
         <main class="container">
-            <section id="home-packages">
-                <h1>Home Internet Package</h1>
-                <p class="section-subtext">
-                    
-                </p>
+            <section id="home-packages" class="fade-in">
+                <h2>Home Internet Package</h2>
                 <div class="package-list">
-                    <div class="package-card" data-package-name="হোম আলট্রা ২৪ Mbps" data-total-price="430.00" data-original-price="540.00"><span class="discount-badge">২০% ছাড়!</span><h3>হোম আলট্রা ২৪ Mbps</h3><div class="speed-display">24<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 20 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 540.00</span></div><p class="total-price">৳ 430.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
-                    <div class="package-card" data-package-name="হোম পাওয়ার ৪০ Mbps" data-total-price="650.00" data-original-price="870.00"><span class="discount-badge">২৫% ছাড়!</span><h3>হোম পাওয়ার ৪০ Mbps</h3><div class="speed-display">40<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 30 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 870.00</span></div><p class="total-price">৳ 650.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: হোম আলট্রা ২৪ Mbps -->
+                    <div class="package-card" data-package-name="হোম আলট্রা ২৪ Mbps" data-total-price="430.00" data-original-price="540.00"><span class="discount-badge">২০% ছাড়!</span><h3>হোম আলট্রা ২৪ Mbps</h3><div class="speed-display">24<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 20 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 540.00</span></div><p class="total-price">৳ 430.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: হোম পাওয়ার ৪০ Mbps -->
+                    <div class="package-card" data-package-name="হোম পাওয়ার ৪০ Mbps" data-total-price="650.00" data-original-price="870.00"><span class="discount-badge">২৫% ছাড়!</span><h3>হোম পাওয়ার ৪০ Mbps</h3><div class="speed-display">40<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 30 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 870.00</span></div><p class="total-price">৳ 650.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
                 </div>
             </section>
             
-            <section id="data-limited-packages">
-                <h1>Data Limited Package</h1>
-                <p class="section-subtext"> 
-                    
-                </p>
+            <section id="data-limited-packages" class="fade-in">
+                <h2>Data Limited Package</h2>
                 <div class="package-list">
-                    <div class="package-card data-limited-card" data-package-name="সাপ্তাহিক ডেটা ২০ জিবি" data-total-price="113.00" data-original-price="135.00"><span class="discount-badge">১৬% ছাড়!</span><h3>সাপ্তাহিক ডেটা ২০ জিবি</h3><div class="data-display">20<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 10 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 25 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 7 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 135.00</span></div><p class="total-price">৳ 113.00 <small>/ ৭ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
-                    <div class="package-card data-limited-card" data-package-name="মাসিক ডেটা ৫০ জিবি" data-total-price="200.00" data-original-price="339.00"><span class="discount-badge">৪১% ছাড়!</span><h3>মাসিক ডেটা ৫০ জিবি</h3><div class="data-display">50<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 10 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 50 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 339.00</span></div><p class="total-price">৳ 200.00 <small>/ ৩০ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: সাপ্তাহিক ডেটা ২০ জিবি -->
+                    <div class="package-card data-limited-card" data-package-name="সাপ্তাহিক ডেটা ২০ জিবি" data-total-price="113.00" data-original-price="135.00"><span class="discount-badge">১৬% ছাড়!</span><h3>সাপ্তাহিক ডেটা ২০ জিবি</h3><div class="data-display">20<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 10 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 25 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 7 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 135.00</span></div><p class="total-price">৳ 113.00 <small>/ ৭ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: মাসিক ডেটা ৫০ জিবি -->
+                    <div class="package-card data-limited-card" data-package-name="মাসিক ডেটা ৫০ জিবি" data-total-price="200.00" data-original-price="339.00"><span class="discount-badge">৪১% ছাড়!</span><h3>মাসিক ডেটা ৫০ জিবি</h3><div class="data-display">50<small>GB</small></div><div class="speed-details"><p><span class="label">স্পিড লিমিট:</span> <span class="value">Up to 10 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 50 Mbps</span></p><p class="fup-speed"><span class="label">FUP স্পিড:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 339.00</span></div><p class="total-price">৳ 200.00 <small>/ ৩০ দিন</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
                 </div>
             </section>
             
-            <section id="special-packages">
-                <h1>Professional Package</h1>
-                <p class="section-subtext">  
-                    
-                </p>
+            <section id="special-packages" class="fade-in">
+                <h2>Professional Package</h2>
                 <div class="package-list">
-                    <div class="package-card specialized-card" data-package-name="Gamer Pro 60 Mbps" data-total-price="800.00" data-original-price="1000.00"><span class="discount-badge">২০% ছাড়!</span><h3>Gamer Pro 60 Mbps</h3><div class="speed-display">60<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps (Low Latency)</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 60 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">Gaming Servers:</span> <span class="value">Low Latency Access</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1000.00</span></div><p class="total-price">৳ 800.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
-                    <div class="package-card specialized-card" data-package-name="Streamer Plus 50 Mbps" data-total-price="900.00" data-original-price="1100.00"><span class="discount-badge">১৮% ছাড়!</span><h3>Streamer Plus 50 Mbps</h3><div class="speed-display">50<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">হাই আপলোড স্পিড:</span> <span class="value">Up to 100 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1100.00</span></div><p class="total-price">৳ 900.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: Gamer Pro 60 Mbps -->
+                    <div class="package-card specialized-card" data-package-name="Gamer Pro 60 Mbps" data-total-price="800.00" data-original-price="1000.00"><span class="discount-badge">২০% ছাড়!</span><h3>Gamer Pro 60 Mbps</h3><div class="speed-display">60<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps (Low Latency)</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">আপলোড স্পিড:</span> <span class="value">Up to 60 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">Gaming Servers:</span> <span class="value">Low Latency Access</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1000.00</span></div><p class="total-price">৳ 800.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
+                    <!-- প্যাকেজ: Streamer Plus 50 Mbps -->
+                    <div class="package-card specialized-card" data-package-name="Streamer Plus 50 Mbps" data-total-price="900.00" data-original-price="1100.00"><span class="discount-badge">১৮% ছাড়!</span><h3>Streamer Plus 50 Mbps</h3><div class="speed-display">50<small>Mbps</small></div><div class="speed-details"><p><span class="label">মেইন ব্যান্ডউইথ:</span> <span class="value">Up to 10 Mbps</span></p><p><span class="label">Cache Speed:</span> <span class="value">Up to 50 Mbps</span></p><p class="high-upload"><span class="label">হাই আপলোড স্পিড:</span> <span class="value">Up to 100 Mbps</span></p><p><span class="label">Facebook Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">YouTube Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">TikTok Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Likee Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Snapchat Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">Vimeo Speed:</span> <span class="value">Up to 50 Mbps</span></p><p><span class="label">CDN Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">GGC Speed:</span> <span class="value">Up to 25 Mbps</span></p><p><span class="label">BDIX Speed:</span> <span class="value">Uncapped Up to 1 Gbps</span></p><p><span class="label">IPTV Access:</span> <span class="value">Enabled</span></p><p><span class="label">Toffee & Bioscope:</span> <span class="value">Uncapped</span></p><p><span class="label">HD Streamz Access:</span> <span class="value">Optimized</span></p><p><span class="label">Live Sports Server:</span> <span class="value">High Speed</span></p><p><span class="label">BDIX Movie Server:</span> <span class="value">High Speed</span></p></div><div class="free-services"><h4>ফ্রি সার্ভিসসমূহ</h4><ul class="free-services-list"><li><a href="#" target="_blank"><i class="fas fa-film icon"></i> FTP মুভি সার্ভার</a></li><li><a href="#" target="_blank"><i class="fas fa-tv icon"></i> বাংলা টিভি</a></li><li><a href="#" target="_blank"><i class="fas fa-satellite-dish icon"></i> অন্যান্য চ্যানেল</a></li></ul></div><div class="pricing"><div class="old-price-container"><span class="old-price">পূর্বমূল্য: ৳ 1100.00</span></div><p class="total-price">৳ 900.00 <small>/ মাস</small></p><span class="vat-info">(VAT সহ)</span></div><button class="select-button">এই প্যাকেজটি নিন</button></div>
                 </div>
             </section>
 
-            <section id="payment-section">
+            <section id="entertainment-zone" class="fade-in">
+                <h2>এক্সক্লুসিভ এন্টারটেইনমেন্ট জোন</h2>
+                
+                <div class="entertainment-grid">
+                    <div class="service-card">
+                        <i class="fas fa-film service-icon"></i>
+                        <h3>FTP মুভি সার্ভার</h3>
+                        <p>হাজারো নতুন ও পুরাতন বাংলা, হিন্দি এবং ইংরেজি মুভি ও সিরিজের বিশাল সংগ্রহ। বাফারিং ছাড়াই দেখুন হাই-স্পিডে।</p>
+                        <a href="#" class="service-button">সার্ভার ভিজিট করুন</a>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-tv service-icon"></i>
+                        <h3>বাংলা টিভি চ্যানেল</h3>
+                        <p>আপনার পছন্দের সকল দেশি টিভি চ্যানেল দেখুন লাইভ। নাটক, খবর বা খেলা, কিছুই মিস হবে না আর।</p>
+                        <a href="#" class="service-button">লাইভ দেখুন</a>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-satellite-dish service-icon"></i>
+                        <h3>অন্যান্য চ্যানেল</h3>
+                        <p>দেশি চ্যানেলের পাশাপাশি উপভোগ করুন বিভিন্ন আন্তর্জাতিক স্পোর্টস, মুভি এবং অন্যান্য জনপ্রিয় চ্যানেলগুলো।</p>
+                        <a href="#" class="service-button">চ্যানেল লিস্ট দেখুন</a>
+                    </div>
+                </div>
+
+                <p class="section-subtext" style="margin-top: 60px;">জনপ্রিয় সোশ্যাল মিডিয়া এবং স্ট্রিমিং প্ল্যাটফর্মগুলোতে নিরবচ্ছিন্ন অ্যাক্সেস উপভোগ করুন।</p>
+                 <div class="social-list">
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-youtube"></i><span>YouTube</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-tiktok"></i><span>TikTok</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fas fa-heart"></i><span>Likee</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-snapchat"></i><span>Snapchat</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-vimeo-v"></i><span>Vimeo</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fas fa-play-circle"></i><span>Hotstar</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-instagram"></i><span>Instagram</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-twitter"></i><span>X (Twitter)</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-reddit-alien"></i><span>Reddit</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-spotify"></i><span>Spotify</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-linkedin-in"></i><span>LinkedIn</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-pinterest-p"></i><span>Pinterest</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-telegram"></i><span>Telegram</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-discord"></i><span>Discord</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fab fa-twitch"></i><span>Twitch</span></a>
+                    <a href="#" target="_blank" class="social-item"><i class="fas fa-film" style="color: #E50914;"></i><span>Netflix</span></a>
+                </div>
+            </section>
+
+            <section id="network-status" class="fade-in">
+                <h2>লাইভ নেটওয়ার্ক স্ট্যাটাস</h2>
+                <div class="status-grid">
+                    <div class="status-item"><span class="status-text">মূল ইন্টারনেট গেটওয়ে</span><span class="status-indicator operational">Operational</span></div>
+                    <div class="status-item"><span class="status-text">BDIX কানেক্টিভিটি</span><span class="status-indicator operational">Operational</span></div>
+                    <div class="status-item"><span class="status-text">FTP সার্ভার</span><span class="status-indicator operational">Operational</span></div>
+                    <div class="status-item"><span class="status-text">IPTV সার্ভিস</span><span class="status-indicator maintenance">Maintenance</span></div>
+                </div>
+            </section>
+
+            <section id="faq" class="fade-in">
+                <h2>সাধারণ প্রশ্নোত্তর</h2>
+                <div class="faq-accordion">
+                    <div class="faq-item">
+                        <button class="faq-question">নতুন সংযোগ নিতে কতদিন সময় লাগে?<i class="fas fa-chevron-down icon"></i></button>
+                        <div class="faq-answer"><p>আবেদন করার পর সাধারণত ২৪ থেকে ৪৮ ঘণ্টার মধ্যে আমাদের টেকনিক্যাল টিম আপনার বাসায় গিয়ে সংযোগ স্থাপন করে দেয়।</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">আমি কীভাবে প্যাকেজ পরিবর্তন করতে পারি?<i class="fas fa-chevron-down icon"></i></button>
+                        <div class="faq-answer"><p>আপনি আমাদের হেল্পলাইন নম্বরে ফোন করে অথবা একটি সাপোর্ট টিকেট খোলার মাধ্যমে সহজেই আপনার বর্তমান প্যাকেজ পরিবর্তন করার জন্য অনুরোধ করতে পারেন।</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="support-ticket-section" class="fade-in">
+                <h2>সাপোর্ট ও অভিযোগ</h2>
+                <p class="section-subtext">যেকোনো সমস্যা বা জিজ্ঞাসার জন্য নিচের ফর্মটি পূরণ করুন। আমাদের সাপোর্ট টিম দ্রুত আপনার সাথে যোগাযোগ করবে।</p>
+                <form id="support-ticket-form">
+                    <div class="form-group">
+                        <label for="support_user_name">আপনার নাম:</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user icon"></i>
+                            <input type="text" id="support_user_name" required placeholder="আপনার সম্পূর্ণ নাম">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="support_user_id">আপনার ইউজার আইডি:</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-card icon"></i>
+                            <input type="text" id="support_user_id" required placeholder="উদাহরণ: L3C-12345">
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="support_category">সমস্যার ধরন:</label>
+                        <select id="support_category" required>
+                            <option value="" disabled selected>একটি ধরন নির্বাচন করুন...</option>
+                            <option value="Slow Speed">স্পিড কম</option>
+                            <option value="No Connection">সংযোগ পাচ্ছি না</option>
+                            <option value="Billing Issue">বিল সংক্রান্ত</option>
+                            <option value="Other">অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="support_details">বিস্তারিত লিখুন:</label>
+                        <textarea id="support_details" rows="5" required placeholder="আপনার সমস্যাটি এখানে বিস্তারিতভাবে লিখুন..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">টিকেট জমা দিন</button>
+                </form>
+
+                <div id="support-loading-indicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>আপনার টিকেট জমা দেওয়া হচ্ছে...</p>
+                </div>
+
+                <div id="support-success-view" class="success-view hidden" style="padding-top: 40px;">
+                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                    <h1>টিকেট সফলভাবে জমা হয়েছে!</h1>
+                    <p class="message">আপনার অভিযোগটি আমরা পেয়েছি। আমাদের সাপোর্ট টিম দ্রুত আপনার সাথে যোগাযোগ করবে।</p>
+                    <button id="back-to-support-form-btn" class="back-button">নতুন অভিযোগ করুন</button>
+                </div>
+            </section>
+
+            <section id="payment-section" class="fade-in">
                 <h2>পেমেন্ট করার পদ্ধতি</h2>
                 <div class="payment-grid">
                     <div class="qr-code-container">
@@ -344,7 +568,7 @@
                 </div>
             </section>
             
-            <section id="confirmation-area">
+            <section id="confirmation-area" class="fade-in">
                 <div id="transaction-form-section">
                     <h2>পেমেন্টের তথ্য জমা দিন</h2>
                     <form id="payment-confirmation-form">
@@ -352,19 +576,14 @@
                             <label for="package_mention">নির্বাচিত প্যাকেজ:</label>
                             <input type="text" id="package_mention" name="package_mention" placeholder="উপরে যেকোনো প্যাকেজ সিলেক্ট করুন" required readonly>
                         </div>
-
-                        <!-- নতুন ইনপুট ফিল্ড: ব্যবহারকারীর নাম -->
                         <div class="form-group">
                             <label for="user_name">ব্যবহারকারীর নাম:</label>
                             <input type="text" id="user_name" name="user_name" placeholder="আপনার পুরো নাম লিখুন" required>
                         </div>
-                        
-                        <!-- নতুন ইনপুট ফিল্ড: ইউজার আইডি -->
                         <div class="form-group">
                             <label for="user_id">ইউজার আইডি:</label>
                             <input type="text" id="user_id" name="user_id" placeholder="আপনার ইন্টারনেট ইউজার আইডি" required>
                         </div>
-
                         <div class="form-group">
                             <label for="phone_number">আপনার ফোন নম্বর:</label>
                             <input type="tel" id="phone_number" name="phone_number" placeholder="Your Phone Number" required pattern="01[3-9]\d{8}">
@@ -373,13 +592,10 @@
                             <label for="transaction_id">Transaction ID / পেমেন্ট রেফারেন্স:</label>
                             <input type="text" id="transaction_id" name="transaction_id" placeholder="Bank Transaction ID / Slip No." required>
                         </div>
-                        
-                        <!-- নতুন ইনপুট ফিল্ড: কুপন কোড (ঐচ্ছিক) -->
                         <div class="form-group">
                             <label for="coupon_code">কুপন কোড (ঐচ্ছিক):</label>
                             <input type="text" id="coupon_code" name="coupon_code" placeholder="যদি কোনো কুপন কোড থাকে">
                         </div>
-
                         <div class="form-group">
                              <label for="payment_amount">সর্বমোট মূল্য (টাকায়):</label>
                             <input type="text" id="payment_amount" name="payment_amount" placeholder="প্যাকেজ সিলেক্ট করলে মূল্য অটো আসবে" required readonly inputmode="decimal">
@@ -387,7 +603,7 @@
                         <button type="submit" class="submit-button">নিশ্চিত করুন ও প্যাকেজ চালু করুন</button>
                     </form>
                 </div>
-                <div id="loading-indicator" class="hidden">
+                <div id="payment-loading-indicator" class="loading-indicator hidden">
                     <div class="spinner"></div>
                     <p>আপনার অনুরোধ প্রসেস করা হচ্ছে...</p>
                 </div>
@@ -399,46 +615,64 @@
         </footer>
     </div>
 
-    <div id="success-view" class="container hidden">
-         <!-- সফল বার্তা এখানে জাভাস্ক্রিপ্ট দ্বারা তৈরি হবে -->
+    <div id="payment-success-view" class="container success-view hidden">
+         <!-- পেমেন্টের সফল বার্তা এখানে জাভাস্ক্রিপ্ট দ্বারা তৈরি হবে -->
     </div>
+
+    <div class="live-chat-btn" onclick="alert('লাইভ চ্যাট সিস্টেম শীঘ্রই আসছে!')"><i class="fas fa-comment-dots"></i></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- অ্যানিমেশন স্ক্রিপ্ট ---
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            fadeInElements.forEach(el => observer.observe(el));
+            
             const mainView = document.getElementById('main-view');
-            const successView = document.getElementById('success-view');
-            const confirmationArea = document.getElementById('confirmation-area');
+            
+            // --- FAQ Accordion ---
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.querySelector('.faq-question').addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('active'); i.querySelector('.faq-answer').style.maxHeight = null; });
+                    if (!isActive) {
+                        item.classList.add('active');
+                        const answer = item.querySelector('.faq-answer');
+                        answer.style.maxHeight = answer.scrollHeight + "px";
+                    }
+                });
+            });
+
+            // --- পেমেন্ট ফর্ম হ্যান্ডলিং ---
+            const paymentConfirmationArea = document.getElementById('confirmation-area');
             const transactionFormSection = document.getElementById('transaction-form-section');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const formElement = document.getElementById('payment-confirmation-form');
-            const packageMentionInput = document.getElementById('package_mention');
-            const userNameInput = document.getElementById('user_name');
-            const userIdInput = document.getElementById('user_id');
-            const phoneNumberInput = document.getElementById('phone_number');
-            const couponCodeInput = document.getElementById('coupon_code');
-            const paymentAmountInput = document.getElementById('payment_amount');
+            const paymentLoadingIndicator = document.getElementById('payment-loading-indicator');
+            const paymentForm = document.getElementById('payment-confirmation-form');
+            const paymentSuccessView = document.getElementById('payment-success-view');
 
             document.querySelectorAll('.select-button').forEach(button => {
                 button.addEventListener('click', function() {
                     const card = this.closest('.package-card');
-                    packageMentionInput.value = card.dataset.packageName;
-                    paymentAmountInput.value = parseFloat(card.dataset.totalPrice).toFixed(2);
-                    confirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    userNameInput.focus({ preventScroll: true });
+                    paymentForm.package_mention.value = card.dataset.packageName;
+                    paymentForm.payment_amount.value = parseFloat(card.dataset.totalPrice).toFixed(2);
+                    paymentConfirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    paymentForm.user_name.focus({ preventScroll: true });
                 });
             });
 
-            formElement.addEventListener('submit', function(event) {
+            paymentForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-
                 const formData = {
-                    package: packageMentionInput.value,
-                    userName: userNameInput.value,
-                    userId: userIdInput.value,
-                    phone: phoneNumberInput.value,
-                    trxId: document.getElementById('transaction_id').value,
-                    couponCode: couponCodeInput.value,
-                    amount: paymentAmountInput.value
+                    package: this.package_mention.value, userName: this.user_name.value,
+                    userId: this.user_id.value, phone: this.phone_number.value,
+                    trxId: this.transaction_id.value, couponCode: this.coupon_code.value, 
+                    amount: this.payment_amount.value
                 };
 
                 if (!formData.package || !formData.userName || !formData.userId || !formData.phone || !formData.trxId) {
@@ -447,106 +681,109 @@
                 }
                 
                 transactionFormSection.classList.add('hidden');
-                loadingIndicator.classList.remove('hidden');
+                paymentLoadingIndicator.classList.remove('hidden');
+                paymentConfirmationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                const submissionTime = new Date().toLocaleString('en-BD', {
-                    timeZone: 'Asia/Dhaka', day: '2-digit', month: '2-digit', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-                });
-
-                // =====================================================================
-                // আপনার টেলিগ্রাম তথ্য এখানে যুক্ত করা হয়েছে
-                // =====================================================================
-                const botToken = '8324432625:AAFRmY1W-QiC3s1sv6ZB5GfmzvzJd7bkrls';
-                const chatId = '7929680940';
-                // =====================================================================
-
-                let message = `
-*🔔 Level3 Carrier Ltd. - নতুন পেমেন্ট তথ্য*
-----------------------------------
-*📅 জমাদানের সময়:* ${submissionTime}
-----------------------------------
-*👤 ব্যবহারকারীর নাম:* ${formData.userName}
-*🆔 ইউজার আইডি:* \`${formData.userId}\`
-*📞 ব্যবহারকারীর ফোন:* \`${formData.phone}\`
-*📦 নির্বাচিত প্যাকেজ:* ${formData.package}
-*💵 পরিশোধিত অর্থ:* ৳${formData.amount}
-*💳 ট্রানজেকশন আইডি:* \`${formData.trxId}\`
-`;
+                const submissionTime = new Date().toLocaleString('en-BD', { timeZone: 'Asia/Dhaka', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
                 
-                // যদি কুপন কোড থাকে, তবেই মেসেজে যুক্ত হবে
-                if (formData.couponCode) {
-                    message += `*🎟️ কুপন কোড:* \`${formData.couponCode}\`\n`;
-                }
+                // *** নতুন ভ্যালিডিটি ক্যালকুলেশন লজিক ***
+                const expiryDate = new Date(); // আজকের তারিখ নেওয়া হলো
+                expiryDate.setMonth(expiryDate.getMonth() + 1); // মাসকে এক মাস এগিয়ে দেওয়া হলো
+                expiryDate.setDate(30); // তারিখ ৩০ নির্ধারণ করা হলো
+                const expiryDateString = expiryDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                const botToken = '8324432625:AAFRmY1W-QiC3s1sv6ZB5GfmzvzJd7bkrls'; // পেমেন্ট বট
+                const chatId = '7929680940';
+                
+                let message = `🔔 *Level3 Carrier Ltd. - নতুন পেমেন্ট তথ্য*\n----------------------------------\n📅 *জমাদানের সময়:* ${submissionTime}\n----------------------------------\n👤 *ব্যবহারকারীর নাম:* ${formData.userName}\n🆔 *ইউজার আইডি:* \`${formData.userId}\`\n📞 *ব্যবহারকারীর ফোন:* \`${formData.phone}\`\n📦 *নির্বাচিত প্যাকেজ:* ${formData.package}\n💵 *পরিশোধিত অর্থ:* ৳${formData.amount}\n💳 *ট্রানজেকশন আইডি:* \`${formData.trxId}\`\n🗓️ *প্যাকেজের মেয়াদ:* ${expiryDateString}\n`;
+                if (formData.couponCode) { message += `🎟️ *কুপন কোড:* \`${formData.couponCode}\`\n`; }
                 message += `----------------------------------`;
 
-                const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        showSuccessView(formData, submissionTime);
-                    } else {
-                        throw new Error(`টেলিগ্রামে মেসেজ পাঠানো যায়নি। সমস্যা: ${data.description}`);
-                    }
+                        showPaymentSuccessView(formData, submissionTime, expiryDateString);
+                    } else { throw new Error(`টেলিগ্রামে মেসেজ পাঠানো যায়নি। সমস্যা: ${data.description}`); }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert(error.message);
-                    loadingIndicator.classList.add('hidden');
+                    console.error('Error:', error); alert(error.message);
+                    paymentLoadingIndicator.classList.add('hidden');
                     transactionFormSection.classList.remove('hidden');
                 });
             });
 
-            function showSuccessView(formData, submissionTime) {
+            function showPaymentSuccessView(formData, submissionTime, expiryDate) {
                 mainView.classList.add('hidden');
-                successView.classList.remove('hidden');
+                paymentSuccessView.classList.remove('hidden');
                 window.scrollTo(0, 0);
                 
-                let successDetailsHTML = `
-                    <p><span class="label">জমাদানের সময়:</span> <span class="value">${submissionTime}</span></p>
-                    <p><span class="label">ব্যবহারকারীর নাম:</span> <span class="value">${formData.userName}</span></p>
-                    <p><span class="label">ইউজার আইডি:</span> <span class="value">${formData.userId}</span></p>
-                    <p><span class="label">আপনার মোবাইল নম্বর:</span> <span class="value phone-number">${formData.phone}</span></p>
-                    <p><span class="label">প্যাকেজের নাম:</span> <span class="value package-name">${formData.package}</span></p>
-                    <p><span class="label">পেমেন্ট রেফারেন্স (TrxID):</span> <span class="value trx-id">${formData.trxId}</span></p>
-                `;
-                
-                // যদি কুপন কোড থাকে, তবেই সফলতার পৃষ্ঠায় দেখানো হবে
-                if (formData.couponCode) {
-                    successDetailsHTML += `<p><span class="label">ব্যবহৃত কুপন:</span> <span class="value">${formData.couponCode}</span></p>`;
-                }
-                
-                successDetailsHTML += `<p><span class="label">পরিশোধিত অর্থ:</span> <span class="value">৳ ${formData.amount}</span></p>`;
+                let successDetailsHTML = `<p><span class="label">জমাদানের সময়:</span> <span class="value">${submissionTime}</span></p><p><span class="label">ব্যবহারকারীর নাম:</span> <span class="value">${formData.userName}</span></p><p><span class="label">ইউজার আইডি:</span> <span class="value">${formData.userId}</span></p><p><span class="label">আপনার মোবাইল নম্বর:</span> <span class="value phone-number">${formData.phone}</span></p><p><span class="label">প্যাকেজের নাম:</span> <span class="value package-name">${formData.package}</span></p><p><span class="label">পেমেন্ট রেফারেন্স (TrxID):</span> <span class="value trx-id">${formData.trxId}</span></p>`;
+                if (formData.couponCode) { successDetailsHTML += `<p><span class="label">ব্যবহৃত কুপন:</span> <span class="value">${formData.couponCode}</span></p>`; }
+                successDetailsHTML += `<p><span class="label">পরিশোধিত অর্থ:</span> <span class="value">৳ ${formData.amount}</span></p><p><span class="label">প্যাকেজের মেয়াদ:</span> <span class="value expiry-date">${expiryDate}</span></p>`;
 
-                successView.innerHTML = `
-                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                    <h1>অনুরোধ সফলভাবে জমা হয়েছে!</h1>
-                    <p class="message">আপনার পেমেন্টের তথ্য আমরা পেয়েছি। যাচাই করে শীঘ্রই আপনার প্যাকেজটি চালু বা রিনিউ করা হবে।</p>
-                    <div class="details-summary">
-                        ${successDetailsHTML}
-                    </div>
-                    <button id="back-to-home-btn" class="back-button">নতুন পেমেন্ট করুন</button>
-                `;
+                paymentSuccessView.innerHTML = `<div class="success-icon"><i class="fas fa-check-circle"></i></div><h1>অনুরোধ সফলভাবে জমা হয়েছে!</h1><p class="message">আপনার পেমেন্টের তথ্য আমরা পেয়েছি। যাচাই করে শীঘ্রই আপনার প্যাকেজটি চালু বা রিনিউ করা হবে।</p><div class="details-summary">${successDetailsHTML}</div><button id="back-to-home-btn" class="back-button">নতুন পেমেন্ট করুন</button>`;
 
                 document.getElementById('back-to-home-btn').addEventListener('click', () => {
-                    successView.classList.add('hidden');
-                    successView.innerHTML = '';
-                    mainView.classList.remove('hidden');
-                    formElement.reset();
+                    paymentSuccessView.classList.add('hidden'); paymentSuccessView.innerHTML = '';
+                    mainView.classList.remove('hidden'); paymentForm.reset();
                     transactionFormSection.classList.remove('hidden');
-                    loadingIndicator.classList.add('hidden');
+                    paymentLoadingIndicator.classList.add('hidden');
                 });
             }
+
+            // --- সাপোর্ট টিকেট ফর্ম হ্যান্ডলিং ---
+            const supportForm = document.getElementById('support-ticket-form');
+            const supportLoadingIndicator = document.getElementById('support-loading-indicator');
+            const supportSuccessView = document.getElementById('support-success-view');
+
+            supportForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const ticketData = {
+                    name: this.support_user_name.value, userId: this.support_user_id.value,
+                    category: this.support_category.value, details: this.support_details.value
+                };
+
+                supportForm.classList.add('hidden');
+                supportLoadingIndicator.classList.remove('hidden');
+
+                const submissionTime = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka', hour12: true });
+                const botToken = '8144907278:AAGBTN_YbRcb-BdiggF1JcLZHGn0YEDez6o'; // সাপোর্ট বট
+                const chatId = '7929680940'; 
+
+                let message = `🎫 *নতুন সাপোর্ট টিকেট*\n----------------------------------\n📅 *সময়:* ${submissionTime}\n👤 *গ্রাহকের নাম:* ${ticketData.name}\n🆔 *ইউজার আইডি:* \`${ticketData.userId}\`\n🔧 *সমস্যার ধরন:* ${ticketData.category}\n----------------------------------\n📋 *বিস্তারিত:*\n${ticketData.details}\n----------------------------------`;
+                
+                // Simulate network delay for better UX
+                setTimeout(() => {
+                    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            supportLoadingIndicator.classList.add('hidden');
+                            supportSuccessView.classList.remove('hidden');
+                            supportForm.reset();
+                        } else { throw new Error(data.description); }
+                    })
+                    .catch(error => {
+                        alert('দুঃখিত, টিকেট জমা দেওয়া যায়নি। অনুগ্রহ করে পরে চেষ্টা করুন।');
+                        console.error('Telegram Error:', error);
+                        supportLoadingIndicator.classList.add('hidden');
+                        supportForm.classList.remove('hidden');
+                    });
+                }, 1000); // 1 second delay
+            });
+
+            document.getElementById('back-to-support-form-btn').addEventListener('click', () => {
+                supportSuccessView.classList.add('hidden');
+                supportForm.classList.remove('hidden');
+            });
+
         });
     </script>
 </body>
